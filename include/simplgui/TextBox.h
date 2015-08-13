@@ -23,6 +23,8 @@ protected:
     virtual void doProcessEvent(sf::Event event);
     virtual void doUpdate(sf::Time dt);
     
+    virtual sf::Vector2f doCalculateAutoSize() const;
+    
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 private:
