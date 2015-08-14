@@ -22,19 +22,22 @@ void TextBox::setFont(const sf::Font &font)
 
 void TextBox::doProcessEvent(sf::Event event)
 {
-    if(event.type == sf::Event::TextEntered)
+    if(isFocused())
     {
-        sf::Uint32 character = event.text.unicode;
-        if(character > 30 && (character < 127 || character > 159))
+        if(event.type == sf::Event::TextEntered)
         {
-            m_string.push_back(character);
+            sf::Uint32 character = event.text.unicode;
+            if(character > 30 && (character < 127 || character > 159))
+            {
+                m_string.push_back(character);
+            }
+            else
+            {
+                if(!m_string.empty())
+                    m_string.pop_back();
+            }
+            m_text.setString((sf::Uint32*)m_string.c_str());
         }
-        else
-        {
-            if(!m_string.empty())
-                m_string.pop_back();
-        }
-        m_text.setString((sf::Uint32*)m_string.c_str());
     }
 }
 
@@ -57,7 +60,7 @@ sf::Vector2f TextBox::doCalculateAutoSize() const
 void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     sf::RectangleShape bgShape(getEffectiveSize());
-    bgShape.setFillColor(sf::Color(255, 255, 255));
+    bgShape.setFillColor(isFocused() ? sf::Color(255, 255, 255) : sf::Color(255, 255, 255, 180));
     
     target.draw(bgShape, getGlobalTransform());
     

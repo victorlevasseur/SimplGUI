@@ -36,6 +36,9 @@ public:
     
     sf::Transform getGlobalTransform() const;
     
+    bool isFocused() const { return m_focus; }
+    void setFocused(bool focus) { m_focus = focus; }
+    
 protected:
     Widget();
     
@@ -48,6 +51,7 @@ private:
     std::weak_ptr<Widget> m_parent;
     sf::Vector2f m_size;
     sf::Vector2f m_minSize;
+    bool m_focus;
 };
 
 }

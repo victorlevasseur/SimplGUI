@@ -3,13 +3,36 @@
 namespace simplgui
 {
 
-Widget::Widget() : sf::Drawable(), sf::Transformable(), m_parent(), m_size(AUTOSIZE, AUTOSIZE), m_minSize(0.f, 0.f)
+Widget::Widget() : 
+    sf::Drawable(), 
+    sf::Transformable(), 
+    m_parent(), 
+    m_size(AUTOSIZE, AUTOSIZE), 
+    m_minSize(0.f, 0.f),
+    m_focus(false)
 {
 
 }
 
 void Widget::processEvent(sf::Event event)
 {
+    sf::Transform globalTr = getGlobalTransform();
+    sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
+    
+    widgetRect = globalTr.transformRect(widgetRect);
+    
+    if(event.type == sf::Event::MouseButtonPressed)
+    {
+        if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
+        {
+            setFocused(true);
+        }
+        else //TODO: Allow widgets to go outside their effective size rectangle (like combobox with their unfoldable list)
+        {
+            setFocused(false);
+        }
+    }
+    
     doProcessEvent(event);
 }
 
