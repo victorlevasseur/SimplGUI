@@ -11,8 +11,9 @@ int main()
     
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
-    textBox->setMinSize(sf::Vector2f(200.f, 0.f));
-    textBox->setSize(sf::Vector2f(simplgui::Widget::AUTOSIZE, simplgui::Widget::AUTOSIZE));
+    textBox->setMinSize(sf::Vector2f(200.f, simplgui::Widget::NO_MIN_SIZE));
+    textBox->setMaxSize(sf::Vector2f(600.f, simplgui::Widget::NO_MAX_SIZE));
+    textBox->setSize(sf::Vector2f(simplgui::Widget::AUTO_SIZE, simplgui::Widget::AUTO_SIZE));
     textBox->setFont(myFont);
     
     sf::Clock clock;

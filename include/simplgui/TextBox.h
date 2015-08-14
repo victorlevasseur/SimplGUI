@@ -16,6 +16,9 @@ public:
     virtual ~TextBox() {};
     
     void setFont(const sf::Font &font);
+    
+    void setSelection(std::size_t cursor);
+    void setSelection(std::size_t begin, std::size_t end);
 
 protected:
     TextBox();
@@ -30,6 +33,9 @@ protected:
 private:
     std::u32string m_string;
     sf::Text m_text;
+    
+    std::size_t m_selectionBegin;
+    std::size_t m_selectionEnd;
 };
 
 }

@@ -1,6 +1,7 @@
 #ifndef SIMPLGUI_WIDGET_H
 #define SIMPLGUI_WIDGET_H
 
+#include <limits>
 #include <memory>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -17,7 +18,9 @@ class Widget : public sf::Drawable, public sf::Transformable
 public:
     using Ptr = std::shared_ptr<Widget>;
     
-    static constexpr float AUTOSIZE = -1.f;
+    static constexpr float AUTO_SIZE = -1.f;
+    static constexpr float NO_MIN_SIZE = 0.f;
+    static constexpr float NO_MAX_SIZE = std::numeric_limits<float>::max();
 
     Widget(const Widget &) = delete;
     Widget& operator=(const Widget &) = delete;
@@ -33,6 +36,9 @@ public:
     
     sf::Vector2f getMinSize() const;
     void setMinSize(sf::Vector2f minSize);
+    
+    sf::Vector2f getMaxSize() const;
+    void setMaxSize(sf::Vector2f maxSize);
     
     sf::Transform getGlobalTransform() const;
     
@@ -51,6 +57,7 @@ private:
     std::weak_ptr<Widget> m_parent;
     sf::Vector2f m_size;
     sf::Vector2f m_minSize;
+    sf::Vector2f m_maxSize;
     bool m_focus;
 };
 

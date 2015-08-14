@@ -7,8 +7,9 @@ Widget::Widget() :
     sf::Drawable(), 
     sf::Transformable(), 
     m_parent(), 
-    m_size(AUTOSIZE, AUTOSIZE), 
-    m_minSize(0.f, 0.f),
+    m_size(AUTO_SIZE, AUTO_SIZE), 
+    m_minSize(NO_MIN_SIZE, NO_MIN_SIZE),
+    m_maxSize(NO_MAX_SIZE, NO_MAX_SIZE),
     m_focus(false)
 {
 
@@ -56,8 +57,8 @@ sf::Vector2f Widget::getEffectiveSize() const
     sf::Vector2f autoSize = doCalculateAutoSize();
     
     return sf::Vector2f(
-        std::max(m_size.x == AUTOSIZE ? autoSize.x : m_size.x, m_minSize.x),
-        std::max(m_size.y == AUTOSIZE ? autoSize.y : m_size.y, m_minSize.y)
+        std::min(std::max(m_size.x == AUTO_SIZE ? autoSize.x : m_size.x, m_minSize.x), m_maxSize.x),
+        std::min(std::max(m_size.y == AUTO_SIZE ? autoSize.y : m_size.y, m_minSize.y), m_maxSize.y)
         );
 }
 
@@ -69,6 +70,16 @@ sf::Vector2f Widget::getMinSize() const
 void Widget::setMinSize(sf::Vector2f minSize)
 {
     m_minSize = minSize;
+}
+
+sf::Vector2f Widget::getMaxSize() const
+{
+    return m_maxSize;
+}
+
+void Widget::setMaxSize(sf::Vector2f maxSize)
+{
+    m_maxSize = maxSize;
 }
 
 sf::Transform Widget::getGlobalTransform() const

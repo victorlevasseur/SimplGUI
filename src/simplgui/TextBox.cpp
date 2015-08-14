@@ -8,7 +8,12 @@ std::shared_ptr<TextBox> TextBox::create()
     return std::shared_ptr<TextBox>(new TextBox());
 }
 
-TextBox::TextBox() : Widget(), m_string(), m_text()
+TextBox::TextBox() : 
+    Widget(), 
+    m_string(), 
+    m_text(),
+    m_selectionBegin(0),
+    m_selectionEnd(0)
 {
     setSize(sf::Vector2f(150.f, 40.f));
     m_text.setColor(sf::Color(0, 0, 0));
@@ -18,6 +23,17 @@ TextBox::TextBox() : Widget(), m_string(), m_text()
 void TextBox::setFont(const sf::Font &font)
 {
     m_text.setFont(font);
+}
+
+void TextBox::setSelection(std::size_t cursor)
+{
+    setSelection(cursor, cursor);
+}
+
+void TextBox::setSelection(std::size_t begin, std::size_t end)
+{
+    m_selectionBegin = begin;
+    m_selectionEnd = end;
 }
 
 void TextBox::doProcessEvent(sf::Event event)
