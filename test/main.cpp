@@ -33,7 +33,7 @@ int main()
         
         textBox->update(dt);
 
-        window.clear();
+        window.clear(sf::Color(128, 128, 128));
         window.draw(*textBox);
         window.display();
     }

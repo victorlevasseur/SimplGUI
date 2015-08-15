@@ -31,6 +31,8 @@ protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 private:
+    void updateText();
+
     std::u32string m_string;
     sf::Text m_text;
     

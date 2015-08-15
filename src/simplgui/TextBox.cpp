@@ -52,9 +52,9 @@ void TextBox::doProcessEvent(sf::Event event)
                 if(!m_string.empty())
                     m_string.pop_back();
             }
-            m_text.setString((sf::Uint32*)m_string.c_str());
             
             needAutoSizeUpdate();
+            updateText();
         }
     }
 }
@@ -83,6 +83,25 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(bgShape, getGlobalTransform());
     
     target.draw(m_text, getGlobalTransform());
+}
+
+void TextBox::updateText()
+{
+    sf::String textString("");
+    m_text.setString("");
+    
+    for(auto it = m_string.begin(); 
+        it != m_string.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == Widget::AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
+        ++it)
+    {
+        textString.insert(textString.getSize(), static_cast<sf::Uint32>(*it));
+        m_text.setString(textString);
+    }
+    
+    if(m_text.getLocalBounds().left + m_text.getLocalBounds().width >= (getSize().x == Widget::AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f)
+        textString.erase(textString.getSize()-1);
+    
+    m_text.setString(textString);
 }
 
 }
