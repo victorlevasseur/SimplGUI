@@ -53,6 +53,8 @@ void TextBox::doProcessEvent(sf::Event event)
                     m_string.pop_back();
             }
             m_text.setString((sf::Uint32*)m_string.c_str());
+            
+            needAutoSizeUpdate();
         }
     }
 }

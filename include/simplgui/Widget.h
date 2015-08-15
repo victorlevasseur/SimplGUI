@@ -51,7 +51,9 @@ protected:
     virtual void doProcessEvent(sf::Event event) = 0;
     virtual void doUpdate(sf::Time dt) = 0;
     
-    virtual sf::Vector2f doCalculateAutoSize() const;
+    sf::Vector2f calculateAutoSize() const;
+    virtual sf::Vector2f doCalculateAutoSize() const = 0;
+    void needAutoSizeUpdate() const;
 
 private:
     std::weak_ptr<Widget> m_parent;
@@ -59,6 +61,9 @@ private:
     sf::Vector2f m_minSize;
     sf::Vector2f m_maxSize;
     bool m_focus;
+    
+    mutable sf::Vector2f m_tmp_autoSize;
+    mutable bool m_tmp_autoSizeNeedUpdate;
 };
 
 }

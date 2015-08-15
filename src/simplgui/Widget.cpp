@@ -10,7 +10,9 @@ Widget::Widget() :
     m_size(AUTO_SIZE, AUTO_SIZE), 
     m_minSize(NO_MIN_SIZE, NO_MIN_SIZE),
     m_maxSize(NO_MAX_SIZE, NO_MAX_SIZE),
-    m_focus(false)
+    m_focus(false),
+    m_tmp_autoSize(),
+    m_tmp_autoSizeNeedUpdate(false)
 {
 
 }
@@ -87,9 +89,20 @@ sf::Transform Widget::getGlobalTransform() const
     return (m_parent.expired() ? getTransform() : (m_parent.lock()->getGlobalTransform() * getTransform()));
 }
 
-sf::Vector2f Widget::doCalculateAutoSize() const
+sf::Vector2f Widget::calculateAutoSize() const
 {
-    return sf::Vector2f(0.f, 0.f);
+    if(m_tmp_autoSizeNeedUpdate)
+    {
+        m_tmp_autoSize = doCalculateAutoSize();
+        m_tmp_autoSizeNeedUpdate = false;   
+    }
+    
+    return m_tmp_autoSize;
+}
+
+void Widget::needAutoSizeUpdate() const
+{
+    m_tmp_autoSizeNeedUpdate = true;
 }
 
 
