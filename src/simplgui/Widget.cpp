@@ -52,6 +52,7 @@ sf::Vector2f Widget::getSize() const
 void Widget::setSize(sf::Vector2f size)
 {
     m_size = size;
+    onSizeUpdated();
 }
 
 sf::Vector2f Widget::getEffectiveSize() const
@@ -72,6 +73,7 @@ sf::Vector2f Widget::getMinSize() const
 void Widget::setMinSize(sf::Vector2f minSize)
 {
     m_minSize = minSize;
+    onSizeUpdated();
 }
 
 sf::Vector2f Widget::getMaxSize() const
@@ -82,6 +84,7 @@ sf::Vector2f Widget::getMaxSize() const
 void Widget::setMaxSize(sf::Vector2f maxSize)
 {
     m_maxSize = maxSize;
+    onSizeUpdated();
 }
 
 sf::Transform Widget::getGlobalTransform() const

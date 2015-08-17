@@ -51,6 +51,8 @@ protected:
     virtual void doProcessEvent(sf::Event event) = 0;
     virtual void doUpdate(sf::Time dt) = 0;
     
+    virtual void onSizeUpdated() = 0;
+    
     sf::Vector2f calculateAutoSize() const;
     virtual sf::Vector2f doCalculateAutoSize() const = 0;
     void needAutoSizeUpdate() const;

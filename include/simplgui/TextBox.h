@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "simplgui/Widget.h"
+#include "simplgui/Connector.h"
 
 namespace simplgui
 {
@@ -19,12 +20,16 @@ public:
     
     void setSelection(std::size_t cursor);
     void setSelection(std::size_t begin, std::size_t end);
+    
+    Connector<const std::u32string&> onTextChanged;
 
 protected:
     TextBox();
     
     virtual void doProcessEvent(sf::Event event);
     virtual void doUpdate(sf::Time dt);
+    
+    virtual void onSizeUpdated();
     
     virtual sf::Vector2f doCalculateAutoSize() const;
     

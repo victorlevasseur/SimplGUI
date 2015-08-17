@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <SFML/Graphics.hpp>
 
 #include "simplgui/TextBox.h"
@@ -15,6 +17,8 @@ int main()
     textBox->setMaxSize(sf::Vector2f(600.f, simplgui::Widget::NO_MAX_SIZE));
     textBox->setSize(sf::Vector2f(simplgui::Widget::AUTO_SIZE, simplgui::Widget::AUTO_SIZE));
     textBox->setFont(myFont);
+    
+    textBox->onTextChanged.bind([](const std::u32string &str){std::cout << "Textbox text has been changed" << std::endl;});
     
     sf::Clock clock;
 

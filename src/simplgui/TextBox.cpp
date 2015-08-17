@@ -10,6 +10,7 @@ std::shared_ptr<TextBox> TextBox::create()
 
 TextBox::TextBox() : 
     Widget(), 
+    onTextChanged(),
     m_string(), 
     m_text(),
     m_selectionBegin(0),
@@ -47,7 +48,7 @@ void TextBox::doProcessEvent(sf::Event event)
             {
                 m_string.push_back(character);
             }
-            else
+            else if(character == 8)
             {
                 if(!m_string.empty())
                     m_string.pop_back();
@@ -55,6 +56,8 @@ void TextBox::doProcessEvent(sf::Event event)
             
             needAutoSizeUpdate();
             updateText();
+            
+            onTextChanged.call(m_string);
         }
     }
 }
@@ -62,6 +65,11 @@ void TextBox::doProcessEvent(sf::Event event)
 void TextBox::doUpdate(sf::Time dt)
 {
 
+}
+
+void TextBox::onSizeUpdated()
+{
+    updateText();
 }
 
 sf::Vector2f TextBox::doCalculateAutoSize() const
