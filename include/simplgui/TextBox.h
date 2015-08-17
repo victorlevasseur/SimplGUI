@@ -37,9 +37,15 @@ protected:
 
 private:
     void updateText();
+    
+    void ensureCharacterIsVisible(std::size_t pos);
+    void removeBlankSpace();
 
     std::u32string m_string;
+    
     sf::Text m_text;
+    std::size_t m_firstDisplayedCharIndex;
+    std::size_t m_lastDisplayedCharIndex;
     
     std::size_t m_selectionBegin;
     std::size_t m_selectionEnd;

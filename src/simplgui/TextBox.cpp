@@ -1,5 +1,7 @@
 #include "simplgui/TextBox.h"
 
+#include <iostream>
+
 namespace simplgui
 {
 
@@ -13,6 +15,8 @@ TextBox::TextBox() :
     onTextChanged(),
     m_string(), 
     m_text(),
+    m_firstDisplayedCharIndex(0),
+    m_lastDisplayedCharIndex(0),
     m_selectionBegin(0),
     m_selectionEnd(0)
 {
@@ -29,12 +33,16 @@ void TextBox::setFont(const sf::Font &font)
 void TextBox::setSelection(std::size_t cursor)
 {
     setSelection(cursor, cursor);
+    
+    ensureCharacterIsVisible(cursor);
 }
 
 void TextBox::setSelection(std::size_t begin, std::size_t end)
 {
     m_selectionBegin = begin;
     m_selectionEnd = end;
+    
+    removeBlankSpace();
 }
 
 void TextBox::doProcessEvent(sf::Event event)
@@ -58,6 +66,11 @@ void TextBox::doProcessEvent(sf::Event event)
             updateText();
             
             onTextChanged.call(m_string);
+            
+            if(!m_string.empty())
+                ensureCharacterIsVisible(m_string.size()-1);
+            else
+                ensureCharacterIsVisible(0);
         }
     }
 }
@@ -97,8 +110,8 @@ void TextBox::updateText()
 {
     sf::String textString("");
     m_text.setString("");
-    
-    for(auto it = m_string.begin(); 
+
+    for(auto it = m_string.begin() + m_firstDisplayedCharIndex; 
         it != m_string.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == Widget::AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
         ++it)
     {
@@ -108,8 +121,45 @@ void TextBox::updateText()
     
     if(m_text.getLocalBounds().left + m_text.getLocalBounds().width >= (getSize().x == Widget::AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f)
         textString.erase(textString.getSize()-1);
+        
+    m_lastDisplayedCharIndex = textString.getSize() > 0 ? m_firstDisplayedCharIndex + textString.getSize()-1 : 0;
     
     m_text.setString(textString);
 }
 
+void TextBox::ensureCharacterIsVisible(std::size_t pos)
+{
+    while(pos < m_firstDisplayedCharIndex)
+    {
+        --m_firstDisplayedCharIndex;
+        needAutoSizeUpdate();
+        updateText();
+    }
+    while(pos > m_lastDisplayedCharIndex)
+    {
+        ++m_firstDisplayedCharIndex;
+        needAutoSizeUpdate();
+        updateText();
+    }
+    
+    removeBlankSpace();
 }
+
+void TextBox::removeBlankSpace()
+{
+    if(m_string.empty())
+        return;
+
+    while(m_lastDisplayedCharIndex == m_string.size()-1 && m_firstDisplayedCharIndex > 0)
+    {
+        --m_firstDisplayedCharIndex;
+        updateText();
+    }
+    if(m_lastDisplayedCharIndex < m_string.size()-1)
+        ++m_firstDisplayedCharIndex;
+
+    updateText();
+}
+
+}
+
