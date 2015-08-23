@@ -38,9 +38,14 @@ private:
     void updateText();
     
     void ensureCharacterIsVisible(std::size_t pos);
-    void removeBlankSpace();
     
     bool hasMultipleCharSelected() const;
+    
+    /**
+     * Improved version of findCharacterPos of SFML so as it returns the full size of
+     * the text if the index = m_string.size()
+     */
+    sf::Vector2f getCharacterPosition(std::ptrdiff_t index) const;
  
     std::u32string m_string;
     
