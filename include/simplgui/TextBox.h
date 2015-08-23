@@ -45,8 +45,8 @@ private:
     std::u32string m_string;
     
     sf::Text m_text;
-    std::size_t m_firstDisplayedCharIndex;
-    std::size_t m_lastDisplayedCharIndex;
+    std::ptrdiff_t m_firstDisplayedCharIndex;
+    std::ptrdiff_t m_lastDisplayedCharIndex;
     
     std::ptrdiff_t m_selectionStart;
     std::ptrdiff_t m_selectionLen;

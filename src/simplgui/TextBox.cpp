@@ -35,10 +35,12 @@ void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
     m_selectionStart = start;
     m_selectionLen = len;
     
-    if(m_selectionStart > m_lastDisplayedCharIndex && m_selectionStart > 0)
-        ensureCharacterIsVisible(m_selectionStart-1);
-    else
+    if(m_selectionStart > m_lastDisplayedCharIndex && m_selectionStart < m_string.size() )
         ensureCharacterIsVisible(m_selectionStart);
+    else if(m_selectionStart < m_firstDisplayedCharIndex)
+        ensureCharacterIsVisible(m_selectionStart);
+    else if(m_selectionStart == m_string.size())
+        ensureCharacterIsVisible(m_selectionStart-1);
     
     removeBlankSpace();
 }
@@ -162,12 +164,12 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
     
     sf::RectangleShape cursorShape(
         sf::Vector2f(
-            !hasMultipleCharSelected() ? 2 : (m_text.findCharacterPos(m_selectionLen + m_selectionStart - m_firstDisplayedCharIndex).x - m_text.findCharacterPos(m_selectionStart - m_firstDisplayedCharIndex).x), 
+            !hasMultipleCharSelected() ? 2 : (m_text.findCharacterPos(std::min(m_lastDisplayedCharIndex - m_firstDisplayedCharIndex, m_selectionLen + m_selectionStart - m_firstDisplayedCharIndex)).x - m_text.findCharacterPos(std::max(std::ptrdiff_t(0), m_selectionStart - m_firstDisplayedCharIndex)).x), 
             m_text.getLocalBounds().top + m_text.getLocalBounds().height
             )
         );
     cursorShape.setPosition(sf::Vector2f(
-        m_text.findCharacterPos(m_selectionStart - m_firstDisplayedCharIndex).x, 
+        m_text.findCharacterPos(std::max(std::ptrdiff_t(0), m_selectionStart - m_firstDisplayedCharIndex)).x, 
         m_text.getLocalBounds().top
         ));
     cursorShape.setFillColor(isFocused() ? (!hasMultipleCharSelected() ? sf::Color(0, 0, 0, 255) : sf::Color(128, 128, 255, 255)) : sf::Color(0, 0, 0, 0));
@@ -200,6 +202,8 @@ void TextBox::updateText()
 
 void TextBox::ensureCharacterIsVisible(std::size_t pos)
 {
+    updateText();
+
     while(pos < m_firstDisplayedCharIndex)
     {
         --m_firstDisplayedCharIndex;
@@ -218,18 +222,19 @@ void TextBox::ensureCharacterIsVisible(std::size_t pos)
 
 void TextBox::removeBlankSpace()
 {
-    if(m_string.empty())
+    /*if(m_string.empty())
         return;
 
     while(m_lastDisplayedCharIndex == m_string.size()-1 && m_firstDisplayedCharIndex > 0)
     {
+        std::cout << "Moving back ! "<<std::endl;
         --m_firstDisplayedCharIndex;
         updateText();
     }
     if(m_lastDisplayedCharIndex < m_string.size()-1)
         ++m_firstDisplayedCharIndex;
 
-    updateText();
+    updateText();*/
 }
 
 bool TextBox::hasMultipleCharSelected() const
