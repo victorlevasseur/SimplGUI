@@ -17,8 +17,8 @@ TextBox::TextBox() :
     m_text(),
     m_firstDisplayedCharIndex(0),
     m_lastDisplayedCharIndex(0),
-    m_selectionBegin(0),
-    m_selectionEnd(0)
+    m_selectionStart(0),
+    m_selectionLen(0)
 {
     setSize(sf::Vector2f(150.f, 40.f));
     m_text.setColor(sf::Color(0, 0, 0));
@@ -30,17 +30,15 @@ void TextBox::setFont(const sf::Font &font)
     m_text.setFont(font);
 }
 
-void TextBox::setSelection(std::size_t cursor)
+void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
 {
-    setSelection(cursor, cursor);
+    m_selectionStart = start;
+    m_selectionLen = len;
     
-    ensureCharacterIsVisible(cursor);
-}
-
-void TextBox::setSelection(std::size_t begin, std::size_t end)
-{
-    m_selectionBegin = begin;
-    m_selectionEnd = end;
+    if(m_selectionStart > m_lastDisplayedCharIndex && m_selectionStart > 0)
+        ensureCharacterIsVisible(m_selectionStart-1);
+    else
+        ensureCharacterIsVisible(m_selectionStart);
     
     removeBlankSpace();
 }
@@ -54,12 +52,34 @@ void TextBox::doProcessEvent(sf::Event event)
             sf::Uint32 character = event.text.unicode;
             if(character > 30 && (character < 127 || character > 159))
             {
-                m_string.push_back(character);
+                m_string.replace(
+                    std::min(m_selectionStart, m_selectionStart + m_selectionLen), 
+                    std::max(m_selectionLen, -m_selectionLen), 
+                    std::u32string(1, static_cast<char32_t>(character))
+                    );
+                
+                setSelection(std::min(m_selectionStart + 1, m_selectionStart + m_selectionLen + 1));
             }
             else if(character == 8)
             {
                 if(!m_string.empty())
-                    m_string.pop_back();
+                {
+                    if(!hasMultipleCharSelected() && m_selectionStart > 0)
+                    {
+                        m_string.replace(m_selectionStart-1, 1, U"");
+                        setSelection(m_selectionStart-1);
+                    }
+                    else if(hasMultipleCharSelected())
+                    {
+                        m_string.replace(
+                            std::min(m_selectionStart, m_selectionStart + m_selectionLen), 
+                            std::max(m_selectionLen, -m_selectionLen), 
+                            U""
+                            );
+                        
+                        setSelection(m_selectionStart + std::min(std::ptrdiff_t(0), m_selectionLen));
+                    }
+                }
             }
             
             needAutoSizeUpdate();
@@ -71,6 +91,45 @@ void TextBox::doProcessEvent(sf::Event event)
                 ensureCharacterIsVisible(m_string.size()-1);
             else
                 ensureCharacterIsVisible(0);
+        }
+        else if(event.type == sf::Event::KeyPressed)
+        {
+            if(event.key.code == sf::Keyboard::Left)
+            {
+                if(event.key.shift)
+                {
+                    if(m_selectionStart + m_selectionLen > 0)
+                        setSelection(m_selectionStart, m_selectionLen-1);
+                }
+                else
+                {
+                    if(m_selectionStart > 0)
+                    {
+                        if(!hasMultipleCharSelected())
+                            setSelection(m_selectionStart - 1);
+                        else
+                            setSelection(std::min(m_selectionStart, m_selectionStart + m_selectionLen));
+                    }
+                }
+            }
+            else if(event.key.code == sf::Keyboard::Right)
+            {
+                if(event.key.shift)
+                {
+                    if(m_selectionStart + m_selectionLen < m_string.size())
+                        setSelection(m_selectionStart, m_selectionLen+1);
+                }
+                else
+                {
+                    if(m_selectionStart < m_string.size())
+                    {
+                        if(!hasMultipleCharSelected())
+                            setSelection(m_selectionStart + m_selectionLen + 1);
+                        else
+                            setSelection(std::max(m_selectionStart, m_selectionStart + m_selectionLen));
+                    }
+                }
+            }
         }
     }
 }
@@ -101,8 +160,20 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
     sf::RectangleShape bgShape(getEffectiveSize());
     bgShape.setFillColor(isFocused() ? sf::Color(255, 255, 255) : sf::Color(255, 255, 255, 180));
     
-    target.draw(bgShape, getGlobalTransform());
+    sf::RectangleShape cursorShape(
+        sf::Vector2f(
+            !hasMultipleCharSelected() ? 2 : (m_text.findCharacterPos(m_selectionLen + m_selectionStart - m_firstDisplayedCharIndex).x - m_text.findCharacterPos(m_selectionStart - m_firstDisplayedCharIndex).x), 
+            m_text.getLocalBounds().top + m_text.getLocalBounds().height
+            )
+        );
+    cursorShape.setPosition(sf::Vector2f(
+        m_text.findCharacterPos(m_selectionStart - m_firstDisplayedCharIndex).x, 
+        m_text.getLocalBounds().top
+        ));
+    cursorShape.setFillColor(isFocused() ? (!hasMultipleCharSelected() ? sf::Color(0, 0, 0, 255) : sf::Color(128, 128, 255, 255)) : sf::Color(0, 0, 0, 0));
     
+    target.draw(bgShape, getGlobalTransform());
+    target.draw(cursorShape, getGlobalTransform());
     target.draw(m_text, getGlobalTransform());
 }
 
@@ -159,6 +230,11 @@ void TextBox::removeBlankSpace()
         ++m_firstDisplayedCharIndex;
 
     updateText();
+}
+
+bool TextBox::hasMultipleCharSelected() const
+{
+    return (m_selectionLen != 0);
 }
 
 }

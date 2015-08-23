@@ -18,8 +18,7 @@ public:
     
     void setFont(const sf::Font &font);
     
-    void setSelection(std::size_t cursor);
-    void setSelection(std::size_t begin, std::size_t end);
+    void setSelection(std::ptrdiff_t start, std::ptrdiff_t len = 0);
     
     Connector<const std::u32string&> onTextChanged;
 
@@ -40,15 +39,17 @@ private:
     
     void ensureCharacterIsVisible(std::size_t pos);
     void removeBlankSpace();
-
+    
+    bool hasMultipleCharSelected() const;
+ 
     std::u32string m_string;
     
     sf::Text m_text;
     std::size_t m_firstDisplayedCharIndex;
     std::size_t m_lastDisplayedCharIndex;
     
-    std::size_t m_selectionBegin;
-    std::size_t m_selectionEnd;
+    std::ptrdiff_t m_selectionStart;
+    std::ptrdiff_t m_selectionLen;
 };
 
 }
