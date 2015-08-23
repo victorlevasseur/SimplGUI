@@ -39,7 +39,7 @@ void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
     else if(m_selectionStart + m_selectionLen < m_firstDisplayedCharIndex)
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
-    else if(m_selectionStart + m_selectionLen == m_string.size())
+    else if(m_selectionStart + m_selectionLen == m_string.size() && !m_string.empty())
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen - 1);
 }
 
@@ -163,12 +163,12 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
     sf::RectangleShape cursorShape(
         sf::Vector2f(
             !hasMultipleCharSelected() ? 2 : (getCharacterPosition(m_selectionLen + m_selectionStart).x - getCharacterPosition(m_selectionStart).x), 
-            m_text.getLocalBounds().top + m_text.getLocalBounds().height
+            getEffectiveSize().y - 6.f
             )
         );
     cursorShape.setPosition(sf::Vector2f(
         getCharacterPosition(m_selectionStart).x, 
-        m_text.getLocalBounds().top
+        3.f
         ));
     cursorShape.setFillColor(isFocused() ? (!hasMultipleCharSelected() ? sf::Color(0, 0, 0, 255) : sf::Color(128, 128, 255, 255)) : sf::Color(0, 0, 0, 0));
     
