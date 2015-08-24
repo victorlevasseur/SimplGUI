@@ -2,7 +2,8 @@
 #define SIMPLGUI_CONNECTOR_H
 
 #include <functional>
-#include <unordered_set>
+#include <map>
+#include <vector>
 
 namespace simplgui
 {
@@ -11,28 +12,40 @@ template<class... Args>
 class Connector
 {
 public:
-    Connector() {};
+    Connector() : currentId(0) {};
     
-    void bind(std::function<void(Args...)> &function)
+    unsigned int bind(std::function<void(Args...)> &function)
     {
-        m_bindedFunctions.push_back(function);
+        unsigned int newId = currentId++;
+        m_bindedFunctions[newId] = function;
+        
+        return newId;
     }
     
-    void bind(std::function<void(Args...)> &&function)
+    unsigned int bind(std::function<void(Args...)> &&function)
     {
-        m_bindedFunctions.push_back(function);
+        unsigned int newId = currentId++;
+        m_bindedFunctions[newId] = function;
+        
+        return newId;
+    }
+    
+    void unbind(unsigned int id)
+    {
+        m_bindedFunctions.erase(id);
     }
     
     void call(Args... args)
     {
         for(auto it = m_bindedFunctions.begin(); it != m_bindedFunctions.end(); ++it)
         {
-            (*it)(args...);
+            (it->second)(args...);
         }
     }
 
 private:
-    std::vector<std::function<void(Args...)>> m_bindedFunctions;
+    std::map<unsigned int, std::function<void(Args...)>> m_bindedFunctions;
+    unsigned int currentId;
 };
 
 }

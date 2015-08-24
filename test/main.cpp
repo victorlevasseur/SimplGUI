@@ -19,7 +19,7 @@ int main()
     textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));
     textBox->setFont(myFont);
     
-    textBox->onTextChanged.bind([](const std::u32string &str){});
+    unsigned int bindId = textBox->onTextChanged.bind([](const std::u32string &str){std::cout << "Text changed" << std::endl;});
     
     sf::Clock clock;
 
