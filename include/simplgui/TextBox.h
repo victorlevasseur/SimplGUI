@@ -51,6 +51,8 @@ private:
      */
     sf::Vector2f getCharacterPosition(std::ptrdiff_t index) const;
     
+    std::ptrdiff_t getCharacterIndexAt(float x, float y) const;
+    
     void eraseSelection();
  
     std::u32string m_string;

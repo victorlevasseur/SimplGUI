@@ -57,7 +57,27 @@ void TextBox::doProcessEvent(sf::Event event)
 {
     if(isFocused())
     {
-        if(event.type == sf::Event::TextEntered)
+        if(event.type == sf::Event::MouseButtonPressed)
+        {
+            //Get the bounding box of the widget
+            sf::Transform globalTr = getGlobalTransform();
+            sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
+            
+            widgetRect = globalTr.transformRect(widgetRect);
+            
+            if(event.mouseButton.button == sf::Mouse::Left)
+            {
+                if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
+                {
+                    sf::Vector2f relativeMousePosition(globalTr.getInverse().transformPoint(event.mouseButton.x, event.mouseButton.y));   
+                    setSelection(getCharacterIndexAt(relativeMousePosition.x, relativeMousePosition.y));
+                }
+            }
+            
+            needAutoSizeUpdate();
+            updateText();
+        }
+        else if(event.type == sf::Event::TextEntered)
         {
             sf::Uint32 character = event.text.unicode;
             if(character > 30 && (character < 127 || character > 159))
@@ -267,6 +287,19 @@ sf::Vector2f TextBox::getCharacterPosition(std::ptrdiff_t index) const
         return sf::Vector2f(m_text.getGlobalBounds().left + m_text.getGlobalBounds().width, m_text.getGlobalBounds().top + m_text.getGlobalBounds().height);
     else 
         return m_text.findCharacterPos(index - m_firstDisplayedCharIndex);
+}
+
+std::ptrdiff_t TextBox::getCharacterIndexAt(float x, float y) const
+{
+    std::ptrdiff_t charIndex = 0;
+    
+    while((m_text.findCharacterPos(charIndex).x + (charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex) ? m_text.findCharacterPos(charIndex+1).x : (m_text.getLocalBounds().left + m_text.getLocalBounds().width)))/2.f < x && 
+        charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex + 1))
+    {
+        ++charIndex;
+    }
+    
+    return charIndex + m_firstDisplayedCharIndex;
 }
 
 void TextBox::eraseSelection()
