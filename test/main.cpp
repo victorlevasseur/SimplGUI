@@ -13,9 +13,10 @@ int main()
     
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
+    textBox->setText(U"This is the initial text !");
     textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
-    //textBox->setMaxSize(sf::Vector2f(600.f, simplgui::NO_MAX_SIZE));
-    textBox->setSize(sf::Vector2f(250/*simplgui::AUTO_SIZE*/, simplgui::AUTO_SIZE));
+    textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));
+    textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));
     textBox->setFont(myFont);
     
     textBox->onTextChanged.bind([](const std::u32string &str){});

@@ -28,6 +28,9 @@ TextBox::TextBox() :
 void TextBox::setFont(const sf::Font &font)
 {
     m_text.setFont(font);
+    
+    updateText();
+    needAutoSizeUpdate();
 }
 
 void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
@@ -41,6 +44,15 @@ void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
     else if(m_selectionStart + m_selectionLen == m_string.size() && !m_string.empty())
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen - 1);
+}
+
+void TextBox::setText(const std::u32string &text)
+{
+    m_string = text;
+    
+    updateText();
+    setSelection(0);
+    needAutoSizeUpdate();
 }
 
 void TextBox::doProcessEvent(sf::Event event)

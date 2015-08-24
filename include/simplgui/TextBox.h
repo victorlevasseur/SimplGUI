@@ -20,6 +20,9 @@ public:
     
     void setSelection(std::ptrdiff_t start, std::ptrdiff_t len = 0);
     
+    std::u32string getText() const { return m_string; };
+    void setText(const std::u32string &text);
+    
     Connector<const std::u32string&> onTextChanged;
 
 protected:
