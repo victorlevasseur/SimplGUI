@@ -20,7 +20,8 @@ constexpr float NO_MAX_SIZE = std::numeric_limits<float>::max();
 class Widget : public sf::Drawable, public sf::Transformable
 {
 public:
-    using Ptr = std::shared_ptr<Widget>;
+    using Ptr = std::shared_ptr<Widget>; ///< Shared pointer to Widget
+    using ConstPtr = std::shared_ptr<const Widget>; ///< Shared pointer to const Widget
 
     Widget(const Widget &) = delete;
     Widget& operator=(const Widget &) = delete;

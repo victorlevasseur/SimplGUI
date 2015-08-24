@@ -11,7 +11,8 @@ namespace simplgui
 class TextBox : public Widget
 {
 public:
-    using Ptr = std::shared_ptr<TextBox>;
+    using Ptr = std::shared_ptr<TextBox>; ///< Shared pointer to TextBox
+    using ConstPtr = std::shared_ptr<const TextBox>; ///< Shared pointer to const TextBox
 
     static std::shared_ptr<TextBox> create();
     virtual ~TextBox() {};
