@@ -13,14 +13,14 @@
 namespace simplgui
 {
 
+constexpr float AUTO_SIZE = -1.f;
+constexpr float NO_MIN_SIZE = 0.f;
+constexpr float NO_MAX_SIZE = std::numeric_limits<float>::max();
+
 class Widget : public sf::Drawable, public sf::Transformable
 {
 public:
     using Ptr = std::shared_ptr<Widget>;
-    
-    static constexpr float AUTO_SIZE = -1.f;
-    static constexpr float NO_MIN_SIZE = 0.f;
-    static constexpr float NO_MAX_SIZE = std::numeric_limits<float>::max();
 
     Widget(const Widget &) = delete;
     Widget& operator=(const Widget &) = delete;

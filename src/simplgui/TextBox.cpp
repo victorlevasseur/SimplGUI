@@ -195,14 +195,14 @@ void TextBox::updateText()
     m_text.setString("");
 
     for(auto it = m_string.begin() + m_firstDisplayedCharIndex; 
-        it != m_string.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == Widget::AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
+        it != m_string.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
         ++it)
     {
         textString.insert(textString.getSize(), static_cast<sf::Uint32>(*it));
         m_text.setString(textString);
     }
     
-    if(m_text.getLocalBounds().left + m_text.getLocalBounds().width >= (getSize().x == Widget::AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f)
+    if(m_text.getLocalBounds().left + m_text.getLocalBounds().width >= (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f)
         textString.erase(textString.getSize()-1);
         
     m_lastDisplayedCharIndex = textString.getSize() > 0 ? m_firstDisplayedCharIndex + textString.getSize()-1 : 0;
