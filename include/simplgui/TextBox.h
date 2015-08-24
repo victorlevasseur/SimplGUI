@@ -46,6 +46,8 @@ private:
      * the text if the index = m_string.size()
      */
     sf::Vector2f getCharacterPosition(std::ptrdiff_t index) const;
+    
+    void eraseSelection();
  
     std::u32string m_string;
     

@@ -71,30 +71,42 @@ void TextBox::doProcessEvent(sf::Event event)
                     }
                     else if(hasMultipleCharSelected())
                     {
-                        m_string.replace(
-                            std::min(m_selectionStart, m_selectionStart + m_selectionLen), 
-                            std::max(m_selectionLen, -m_selectionLen), 
-                            U""
-                            );
-                        
-                        setSelection(m_selectionStart + std::min(std::ptrdiff_t(0), m_selectionLen));
+                        eraseSelection();
                     }
                 }
             }
+            else //Avoid useless update (below) if the text is not processed
+                return;
             
             needAutoSizeUpdate();
             updateText();
             
             onTextChanged.call(m_string);
-            
-            if(!m_string.empty())
-                ensureCharacterIsVisible(m_string.size()-1);
-            else
-                ensureCharacterIsVisible(0);
         }
         else if(event.type == sf::Event::KeyPressed)
         {
-            if(event.key.code == sf::Keyboard::Left)
+            if(event.key.code == sf::Keyboard::Delete)
+            {
+                if(!m_string.empty())
+                {
+                    if(!hasMultipleCharSelected() && m_selectionStart < m_string.size())
+                    {
+                        m_string.replace(m_selectionStart, 1, U"");
+                        setSelection(m_selectionStart);
+                        
+                        needAutoSizeUpdate();
+                        updateText();
+                    }
+                    else if(hasMultipleCharSelected())
+                    {
+                        eraseSelection();
+                        
+                        needAutoSizeUpdate();
+                        updateText();
+                    }
+                }
+            }
+            else if(event.key.code == sf::Keyboard::Left)
             {
                 if(event.key.shift)
                 {
@@ -229,6 +241,17 @@ sf::Vector2f TextBox::getCharacterPosition(std::ptrdiff_t index) const
         return sf::Vector2f(m_text.getGlobalBounds().left + m_text.getGlobalBounds().width, m_text.getGlobalBounds().top + m_text.getGlobalBounds().height);
     else 
         return m_text.findCharacterPos(index - m_firstDisplayedCharIndex);
+}
+
+void TextBox::eraseSelection()
+{
+    m_string.replace(
+        std::min(m_selectionStart, m_selectionStart + m_selectionLen), 
+        std::max(m_selectionLen, -m_selectionLen), 
+        U""
+    );
+                        
+    setSelection(m_selectionStart + std::min(std::ptrdiff_t(0), m_selectionLen));
 }
 
 }
