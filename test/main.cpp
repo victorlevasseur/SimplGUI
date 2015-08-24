@@ -13,7 +13,7 @@ int main()
     
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
-    textBox->setText(U"This is the initial text !");
+    textBox->setText(U"This is the initial very very long text !");
     textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
     textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));
     textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));

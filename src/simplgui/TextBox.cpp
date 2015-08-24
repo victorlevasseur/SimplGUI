@@ -38,12 +38,10 @@ void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
     m_selectionStart = start;
     m_selectionLen = len;
     
-    if(m_selectionStart + m_selectionLen > m_lastDisplayedCharIndex && m_selectionStart + m_selectionLen < m_string.size() )
-        ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
-    else if(m_selectionStart + m_selectionLen < m_firstDisplayedCharIndex)
-        ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
-    else if(m_selectionStart + m_selectionLen == m_string.size() && !m_string.empty())
+    if(m_selectionStart + m_selectionLen == m_string.size() && !m_string.empty())
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen - 1);
+    else
+        ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
 }
 
 void TextBox::setText(const std::u32string &text)
@@ -226,6 +224,7 @@ void TextBox::ensureCharacterIsVisible(std::size_t pos)
 {
     updateText();
 
+    //Move the display margin until the character is visible
     while(pos < m_firstDisplayedCharIndex)
     {
         --m_firstDisplayedCharIndex;
@@ -238,6 +237,21 @@ void TextBox::ensureCharacterIsVisible(std::size_t pos)
         needAutoSizeUpdate();
         updateText();
     }
+    
+    //Try to avoid a blank space on the right of the TextBox if the text is too much offsetted
+    while(m_lastDisplayedCharIndex >= m_string.size() - 1 && m_firstDisplayedCharIndex > 0)
+    {
+        --m_firstDisplayedCharIndex;
+        needAutoSizeUpdate();
+        updateText();
+        if(m_lastDisplayedCharIndex >= 0 && m_lastDisplayedCharIndex < m_string.size() - 1)
+        {
+            ++m_firstDisplayedCharIndex;
+            needAutoSizeUpdate();
+            updateText();
+            break;
+        }
+    }
 }
 
 bool TextBox::hasMultipleCharSelected() const
@@ -247,7 +261,7 @@ bool TextBox::hasMultipleCharSelected() const
 
 sf::Vector2f TextBox::getCharacterPosition(std::ptrdiff_t index) const
 {
-    if(index < 0)
+    if(index <= 0)
         return m_text.getPosition();
     else if(index >= m_string.size())
         return sf::Vector2f(m_text.getGlobalBounds().left + m_text.getGlobalBounds().width, m_text.getGlobalBounds().top + m_text.getGlobalBounds().height);
