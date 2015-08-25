@@ -63,6 +63,8 @@ private:
     
     std::ptrdiff_t m_selectionStart;
     std::ptrdiff_t m_selectionLen;
+    
+    bool m_leftClicking;
 };
 
 }

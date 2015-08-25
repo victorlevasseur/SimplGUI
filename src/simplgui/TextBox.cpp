@@ -18,7 +18,8 @@ TextBox::TextBox() :
     m_firstDisplayedCharIndex(0),
     m_lastDisplayedCharIndex(0),
     m_selectionStart(0),
-    m_selectionLen(0)
+    m_selectionLen(0),
+    m_leftClicking(false)
 {
     setSize(sf::Vector2f(150.f, 40.f));
     m_text.setColor(sf::Color(0, 0, 0));
@@ -57,21 +58,50 @@ void TextBox::doProcessEvent(sf::Event event)
 {
     if(isFocused())
     {
+        //Get the bounding box of the widget
+        sf::Transform globalTr = getGlobalTransform();
+        sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
+        widgetRect = globalTr.transformRect(widgetRect);
+        
         if(event.type == sf::Event::MouseButtonPressed)
         {
-            //Get the bounding box of the widget
-            sf::Transform globalTr = getGlobalTransform();
-            sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
-            
-            widgetRect = globalTr.transformRect(widgetRect);
-            
             if(event.mouseButton.button == sf::Mouse::Left)
             {
                 if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
                 {
                     sf::Vector2f relativeMousePosition(globalTr.getInverse().transformPoint(event.mouseButton.x, event.mouseButton.y));   
                     setSelection(getCharacterIndexAt(relativeMousePosition.x, relativeMousePosition.y));
+                    m_leftClicking = true;
                 }
+            }
+            
+            needAutoSizeUpdate();
+            updateText();
+        }
+        else if(event.type == sf::Event::MouseMoved)
+        {
+            if(m_leftClicking)
+            {
+                if(widgetRect.contains(event.mouseMove.x, event.mouseMove.y))
+                {
+                    sf::Vector2f relativeMousePosition(globalTr.getInverse().transformPoint(event.mouseMove.x, event.mouseMove.y));   
+                    setSelection(m_selectionStart, getCharacterIndexAt(relativeMousePosition.x, relativeMousePosition.y) - m_selectionStart);
+                }
+            }
+            
+            needAutoSizeUpdate();
+            updateText();
+        }
+        else if(event.type == sf::Event::MouseButtonReleased)
+        {
+            if(event.mouseButton.button == sf::Mouse::Left && m_leftClicking)
+            {
+                if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
+                {
+                    sf::Vector2f relativeMousePosition(globalTr.getInverse().transformPoint(event.mouseButton.x, event.mouseButton.y));   
+                    setSelection(m_selectionStart, getCharacterIndexAt(relativeMousePosition.x, relativeMousePosition.y) - m_selectionStart);
+                }
+                m_leftClicking = false;
             }
             
             needAutoSizeUpdate();
