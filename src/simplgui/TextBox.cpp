@@ -19,6 +19,7 @@ TextBox::TextBox() :
     m_lastDisplayedCharIndex(0),
     m_selectionStart(0),
     m_selectionLen(0),
+    m_hideChar(0),
     m_leftClicking(false)
 {
     setSize(sf::Vector2f(150.f, 40.f));
@@ -61,6 +62,14 @@ void TextBox::setText(const std::u32string &text)
     
     updateText();
     setSelection(0);
+    needAutoSizeUpdate();
+}
+
+void TextBox::setHideCharacter(char32_t hideChar)
+{
+    m_hideChar = hideChar;
+    
+    updateText();
     needAutoSizeUpdate();
 }
 
@@ -261,11 +270,17 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 void TextBox::updateText()
 {
+    std::u32string strToDisplay;
+    if(m_hideChar == 0)
+        strToDisplay = m_string;
+    else
+        strToDisplay = std::u32string(m_string.size(), m_hideChar);
+
     sf::String textString("");
     m_text.setString("");
 
-    for(auto it = m_string.begin() + m_firstDisplayedCharIndex; 
-        it != m_string.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
+    for(auto it = strToDisplay.begin() + m_firstDisplayedCharIndex; 
+        it != strToDisplay.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
         ++it)
     {
         textString.insert(textString.getSize(), static_cast<sf::Uint32>(*it));

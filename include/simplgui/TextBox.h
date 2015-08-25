@@ -26,6 +26,9 @@ public:
     std::u32string getText() const { return m_string; };
     void setText(const std::u32string &text);
     
+    char32_t getHideCharacter() const { return m_hideChar; };
+    void setHideCharacter(char32_t hideChar = U'\x25CF');
+    
     Connector<const std::u32string&> onTextChanged;
 
 protected:
@@ -65,6 +68,8 @@ private:
     
     int m_selectionStart;
     int m_selectionLen;
+    
+    char32_t m_hideChar;
     
     bool m_leftClicking;
 };
