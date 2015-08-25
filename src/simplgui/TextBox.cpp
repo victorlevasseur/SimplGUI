@@ -34,6 +34,16 @@ void TextBox::setFont(const sf::Font &font)
     needAutoSizeUpdate();
 }
 
+int TextBox::getSelectionStart() const
+{
+    return m_selectionStart;
+}
+
+int TextBox::getSelectionLen() const
+{
+    return m_selectionLen;
+}
+
 void TextBox::setSelection(int start, int len)
 {
     m_selectionStart = start;

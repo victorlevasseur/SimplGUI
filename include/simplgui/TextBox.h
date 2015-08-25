@@ -19,6 +19,8 @@ public:
     
     void setFont(const sf::Font &font);
     
+    int getSelectionStart() const;
+    int getSelectionLen() const;
     void setSelection(int start, int len = 0);
     
     std::u32string getText() const { return m_string; };
