@@ -34,7 +34,7 @@ void TextBox::setFont(const sf::Font &font)
     needAutoSizeUpdate();
 }
 
-void TextBox::setSelection(std::ptrdiff_t start, std::ptrdiff_t len)
+void TextBox::setSelection(int start, int len)
 {
     m_selectionStart = start;
     m_selectionLen = len;
@@ -309,7 +309,7 @@ bool TextBox::hasMultipleCharSelected() const
     return (m_selectionLen != 0);
 }
 
-sf::Vector2f TextBox::getCharacterPosition(std::ptrdiff_t index) const
+sf::Vector2f TextBox::getCharacterPosition(int index) const
 {
     if(index <= 0)
         return m_text.getPosition();
@@ -319,9 +319,9 @@ sf::Vector2f TextBox::getCharacterPosition(std::ptrdiff_t index) const
         return m_text.findCharacterPos(index - m_firstDisplayedCharIndex);
 }
 
-std::ptrdiff_t TextBox::getCharacterIndexAt(float x, float y) const
+int TextBox::getCharacterIndexAt(float x, float y) const
 {
-    std::ptrdiff_t charIndex = 0;
+    int charIndex = 0;
     
     while((m_text.findCharacterPos(charIndex).x + (charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex) ? m_text.findCharacterPos(charIndex+1).x : (m_text.getLocalBounds().left + m_text.getLocalBounds().width)))/2.f < x && 
         charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex + 1))
@@ -340,7 +340,7 @@ void TextBox::eraseSelection()
         U""
     );
                         
-    setSelection(m_selectionStart + std::min(std::ptrdiff_t(0), m_selectionLen));
+    setSelection(m_selectionStart + std::min(0, m_selectionLen));
 }
 
 }

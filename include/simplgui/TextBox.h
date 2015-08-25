@@ -19,7 +19,7 @@ public:
     
     void setFont(const sf::Font &font);
     
-    void setSelection(std::ptrdiff_t start, std::ptrdiff_t len = 0);
+    void setSelection(int start, int len = 0);
     
     std::u32string getText() const { return m_string; };
     void setText(const std::u32string &text);
@@ -49,20 +49,20 @@ private:
      * Improved version of findCharacterPos of SFML so as it returns the full size of
      * the text if the index = m_string.size()
      */
-    sf::Vector2f getCharacterPosition(std::ptrdiff_t index) const;
+    sf::Vector2f getCharacterPosition(int index) const;
     
-    std::ptrdiff_t getCharacterIndexAt(float x, float y) const;
+    int getCharacterIndexAt(float x, float y) const;
     
     void eraseSelection();
  
     std::u32string m_string;
     
     sf::Text m_text;
-    std::ptrdiff_t m_firstDisplayedCharIndex;
-    std::ptrdiff_t m_lastDisplayedCharIndex;
+    int m_firstDisplayedCharIndex;
+    int m_lastDisplayedCharIndex;
     
-    std::ptrdiff_t m_selectionStart;
-    std::ptrdiff_t m_selectionLen;
+    int m_selectionStart;
+    int m_selectionLen;
     
     bool m_leftClicking;
 };
