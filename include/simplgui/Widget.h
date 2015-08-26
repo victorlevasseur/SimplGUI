@@ -35,6 +35,10 @@ public:
 
     Widget(const Widget &) = delete;
     Widget& operator=(const Widget &) = delete;
+    
+    /**
+     * Widget's destructor
+     */
     virtual ~Widget() {};
     
     /**
@@ -108,13 +112,37 @@ public:
 protected:
     Widget();
     
+    /**
+     * All widgets must overload this method to be able to process SFML events.
+     */
     virtual void doProcessEvent(sf::Event event) = 0;
+    
+    /**
+     * All widgets must overload this method to be able to update themselves each frame.
+     */
     virtual void doUpdate(sf::Time dt) = 0;
     
-    virtual void onSizeUpdated() = 0;
+    /**
+     * Called everytime the widget's size change. Widgets can overload this method to react to the size change.
+     */
+    virtual void onSizeUpdated() {};
     
+    /**
+     * Calculate the prefered autosize of the widget (if needed, Widgets must call needAutoSizeUpdate() if they need
+     * to update their autosize so as this method will refresh its autosize cache).
+     * \return the prefered size
+     */
     sf::Vector2f calculateAutoSize() const;
+    
+    /**
+     * All widgets must overload this method to provide their prefered size.
+     */
     virtual sf::Vector2f doCalculateAutoSize() const = 0;
+    
+    /**
+     * Call this method to force an update of the autosize (which is not calculated each time calculateAutoSize() is 
+     * called).
+     */
     void needAutoSizeUpdate() const;
     
     /**
