@@ -1,8 +1,15 @@
+#include <codecvt>
 #include <iostream>
+#include <locale>
 
 #include <SFML/Graphics.hpp>
 
 #include "simplgui/TextBox.h"
+
+void whenTextChanged(const std::u32string &str)
+{
+    
+}
 
 int main()
 {
@@ -14,13 +21,13 @@ int main()
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
     textBox->setText(U"Password");
-    textBox->setHideCharacter();
+    //textBox->setHideCharacter();
     textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
     textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));
     textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));
     textBox->setFont(myFont);
     
-    unsigned int bindId = textBox->onTextChanged.bind([](const std::u32string &str){std::cout << "Text changed" << std::endl;});
+    unsigned int bindId = textBox->onTextChanged.bind(whenTextChanged);
     
     sf::Clock clock;
 
