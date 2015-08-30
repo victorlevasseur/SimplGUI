@@ -81,7 +81,7 @@ protected:
 private:
     void updateText();
     
-    void ensureCharacterIsVisible(std::size_t pos);
+    void ensureCharacterIsVisible(unsigned int pos);
     
     bool hasMultipleCharSelected() const;
     
@@ -89,7 +89,7 @@ private:
      * Improved version of findCharacterPos of SFML so as it returns the full size of
      * the text if the index = m_string.size()
      */
-    sf::Vector2f getCharacterPosition(int index) const;
+    sf::Vector2f getCharacterPosition(unsigned int index) const;
     
     int getCharacterIndexAt(float x, float y) const;
     
@@ -98,8 +98,8 @@ private:
     std::u32string m_string;
     
     sf::Text m_text;
-    int m_firstDisplayedCharIndex;
-    int m_lastDisplayedCharIndex;
+    unsigned int m_firstDisplayedCharIndex;
+    unsigned int m_lastDisplayedCharIndex;
     
     int m_selectionStart;
     int m_selectionLen;

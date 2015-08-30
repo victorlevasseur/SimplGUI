@@ -50,7 +50,7 @@ void TextBox::setSelection(int start, int len)
     m_selectionStart = start;
     m_selectionLen = len;
     
-    if(m_selectionStart + m_selectionLen == m_string.size() && !m_string.empty())
+    if(m_selectionStart + m_selectionLen == static_cast<int>(m_string.size()) && !m_string.empty())
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen - 1);
     else
         ensureCharacterIsVisible(m_selectionStart + m_selectionLen);
@@ -168,7 +168,7 @@ void TextBox::doProcessEvent(sf::Event event)
             {
                 if(!m_string.empty())
                 {
-                    if(!hasMultipleCharSelected() && m_selectionStart < m_string.size())
+                    if(!hasMultipleCharSelected() && m_selectionStart < static_cast<int>(m_string.size()))
                     {
                         m_string.replace(m_selectionStart, 1, U"");
                         setSelection(m_selectionStart);
@@ -207,12 +207,12 @@ void TextBox::doProcessEvent(sf::Event event)
             {
                 if(event.key.shift)
                 {
-                    if(m_selectionStart + m_selectionLen < m_string.size())
+                    if(m_selectionStart + m_selectionLen < static_cast<int>(m_string.size()))
                         setSelection(m_selectionStart, m_selectionLen+1);
                 }
                 else
                 {
-                    if(m_selectionStart < m_string.size())
+                    if(m_selectionStart < static_cast<int>(m_string.size()))
                     {
                         if(!hasMultipleCharSelected())
                             setSelection(m_selectionStart + m_selectionLen + 1);
@@ -295,7 +295,7 @@ void TextBox::updateText()
     m_text.setString(textString);
 }
 
-void TextBox::ensureCharacterIsVisible(std::size_t pos)
+void TextBox::ensureCharacterIsVisible(unsigned int pos)
 {
     updateText();
 
@@ -334,7 +334,7 @@ bool TextBox::hasMultipleCharSelected() const
     return (m_selectionLen != 0);
 }
 
-sf::Vector2f TextBox::getCharacterPosition(int index) const
+sf::Vector2f TextBox::getCharacterPosition(unsigned int index) const
 {
     if(index <= 0)
         return m_text.getPosition();
@@ -346,7 +346,7 @@ sf::Vector2f TextBox::getCharacterPosition(int index) const
 
 int TextBox::getCharacterIndexAt(float x, float y) const
 {
-    int charIndex = 0;
+    unsigned int charIndex = 0;
     
     while((m_text.findCharacterPos(charIndex).x + (charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex) ? m_text.findCharacterPos(charIndex+1).x : (m_text.getLocalBounds().left + m_text.getLocalBounds().width)))/2.f < x && 
         charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex + 1))
