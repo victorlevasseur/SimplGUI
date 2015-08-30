@@ -225,7 +225,7 @@ void TextBox::doProcessEvent(sf::Event event)
     }
 }
 
-void TextBox::doUpdate(sf::Time dt)
+void TextBox::doUpdate(sf::Time)
 {
 
 }
@@ -246,7 +246,7 @@ sf::Vector2f TextBox::doCalculateAutoSize() const
         );
 }
 
-void TextBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
+void TextBox::draw(sf::RenderTarget &target, sf::RenderStates) const
 {
     sf::RectangleShape bgShape(getEffectiveSize());
     bgShape.setFillColor(isFocused() ? sf::Color(255, 255, 255) : sf::Color(255, 255, 255, 180));
@@ -319,7 +319,7 @@ void TextBox::ensureCharacterIsVisible(unsigned int pos)
         --m_firstDisplayedCharIndex;
         needAutoSizeUpdate();
         updateText();
-        if(m_lastDisplayedCharIndex >= 0 && m_lastDisplayedCharIndex < m_string.size() - 1)
+        if(m_lastDisplayedCharIndex < m_string.size() - 1)
         {
             ++m_firstDisplayedCharIndex;
             needAutoSizeUpdate();
@@ -344,7 +344,7 @@ sf::Vector2f TextBox::getCharacterPosition(unsigned int index) const
         return m_text.findCharacterPos(index - m_firstDisplayedCharIndex);
 }
 
-int TextBox::getCharacterIndexAt(float x, float y) const
+int TextBox::getCharacterIndexAt(float x, float) const
 {
     unsigned int charIndex = 0;
     
