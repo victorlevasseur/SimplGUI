@@ -76,6 +76,8 @@ protected:
     
     virtual sf::Vector2f doCalculateAutoSize() const;
     
+    virtual void doThemeUpdate();
+    
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
 private:
@@ -98,6 +100,7 @@ private:
     std::u32string m_string;
     
     sf::Text m_text;
+    sf::Font m_font;
     unsigned int m_firstDisplayedCharIndex;
     unsigned int m_lastDisplayedCharIndex;
     

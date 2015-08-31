@@ -12,7 +12,7 @@ template<class... Args>
 class Connector
 {
 public:
-    Connector() : currentId(0) {};
+    Connector() : m_bindedFunctions(), currentId(0) {};
     
     unsigned int bind(std::function<void(Args...)> &function)
     {

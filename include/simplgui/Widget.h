@@ -10,6 +10,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include "simplgui/Theme.h"
+
 namespace simplgui
 {
 
@@ -109,6 +111,10 @@ public:
      */
     void setFocused(bool focus) { m_focus = focus; }
     
+    const Theme& getTheme() const { return m_theme; }
+    
+    void setTheme(const Theme &theme) { m_theme = theme; doThemeUpdate(); }
+    
 protected:
     Widget();
     
@@ -140,6 +146,11 @@ protected:
     virtual sf::Vector2f doCalculateAutoSize() const = 0;
     
     /**
+     * Widgets can overload this method to react to a theme change (to update their visual appearance).
+     */
+    virtual void doThemeUpdate() {};
+    
+    /**
      * Call this method to force an update of the autosize (which is not calculated each time calculateAutoSize() is 
      * called).
      */
@@ -159,6 +170,7 @@ private:
     sf::Vector2f m_minSize;
     sf::Vector2f m_maxSize;
     bool m_focus;
+    Theme m_theme;
     
     mutable sf::Vector2f m_tmp_autoSize;
     mutable bool m_tmp_autoSizeNeedUpdate;

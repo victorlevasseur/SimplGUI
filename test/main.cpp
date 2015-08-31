@@ -15,8 +15,9 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "A test of SimplGUI");
     
-    sf::Font myFont;
-    myFont.loadFromFile("LiberationSans.ttf");
+    simplgui::Theme myTheme = simplgui::Theme::defaultTheme();
+    myTheme.setProperty<std::string>("font", "DejaVu.ttf");
+    myTheme.setProperty<unsigned int>("font_size", 50);
     
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
@@ -25,7 +26,7 @@ int main()
     textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
     textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));
     textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));
-    textBox->setFont(myFont);
+    textBox->setTheme(myTheme);
     
     unsigned int bindId = textBox->onTextChanged.bind(whenTextChanged);
     

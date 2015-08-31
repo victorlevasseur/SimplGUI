@@ -11,6 +11,7 @@ Widget::Widget() :
     m_minSize(NO_MIN_SIZE, NO_MIN_SIZE),
     m_maxSize(NO_MAX_SIZE, NO_MAX_SIZE),
     m_focus(false),
+    m_theme(Theme::defaultTheme()),
     m_tmp_autoSize(),
     m_tmp_autoSizeNeedUpdate(false)
 {
