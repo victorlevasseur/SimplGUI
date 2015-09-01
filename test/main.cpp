@@ -21,7 +21,7 @@ int main()
     
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
-    textBox->setText(U"Password");
+    textBox->setText(U"Some text");
     //textBox->setHideCharacter();
     textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
     textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));

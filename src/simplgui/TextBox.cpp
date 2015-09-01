@@ -252,9 +252,9 @@ sf::Vector2f TextBox::doCalculateAutoSize() const
 
 void TextBox::doThemeUpdate()
 {
-    m_font.loadFromFile(getTheme().getProperty<std::string>("font"));
+    m_font.loadFromFile(getTheme().getProperty<std::string>("font", "Liberation.ttf"));
     m_text.setFont(m_font); //Force an update of the text object
-    m_text.setCharacterSize(getTheme().getProperty<unsigned int>("font_size"));
+    m_text.setCharacterSize(getTheme().getProperty<unsigned int>("font_size", 30));
     
     updateText();
     needAutoSizeUpdate();
