@@ -9,9 +9,12 @@
 #include <SFML/Graphics/Font.hpp>
 
 #include "simplgui/Any.h"
+#include "simplgui/StateDepProperty.h"
 
 namespace simplgui
 {
+
+using StateColor = StateDepProperty<sf::Color>;
 
 class Theme
 {
@@ -45,6 +48,12 @@ public:
     }
     
     template<class T>
+    void setProperty(const std::string &name, const T &value)
+    {
+        m_properties[name] = Any(value);
+    }
+    
+    template<class T>
     void setProperty(const std::string &name, T &&value)
     {
         m_properties[name] = Any(std::forward<T>(value));
@@ -55,9 +64,8 @@ public:
         Theme th;
         th.setProperty<std::string>("font", "LiberationSans.ttf");
         th.setProperty<unsigned int>("font_size", 30);
-        th.setProperty<sf::Color>("background_color.normal", sf::Color(255, 255, 255, 180));
-        th.setProperty<sf::Color>("background_color.focused", sf::Color(255, 255, 255, 255));
-        th.setProperty<sf::Color>("text_color", sf::Color(0, 0, 0, 255));
+        th.setProperty<StateColor>("background_color", StateColor(sf::Color(255, 255, 255, 180), sf::Color(255, 255, 255, 255)));
+        th.setProperty<StateColor>("text_color", StateColor(sf::Color(0, 0, 0, 255)));
         
         return th;
     }

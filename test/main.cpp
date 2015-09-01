@@ -15,10 +15,15 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "A test of SimplGUI");
     
+    //THEME
     simplgui::Theme myTheme = simplgui::Theme::defaultTheme();
     myTheme.setProperty<std::string>("font", "DejaVu.ttf");
     myTheme.setProperty<unsigned int>("font_size", 50);
+    simplgui::StateColor bgColor = myTheme.getProperty<simplgui::StateColor>("background_color");
+    bgColor.focused = sf::Color(160, 160, 255, 255);
+    myTheme.setProperty<simplgui::StateColor>("background_color", bgColor);
     
+    //TEXTBOX
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
     textBox->setPosition(sf::Vector2f(100, 100));
     textBox->setText(U"Some text");

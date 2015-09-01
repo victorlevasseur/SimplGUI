@@ -263,7 +263,7 @@ void TextBox::doThemeUpdate()
 void TextBox::draw(sf::RenderTarget &target, sf::RenderStates) const
 {
     sf::RectangleShape bgShape(getEffectiveSize());
-    bgShape.setFillColor(isFocused() ? sf::Color(255, 255, 255) : sf::Color(255, 255, 255, 180));
+    bgShape.setFillColor(isFocused() ? getTheme().getProperty<StateColor>("background_color").focused : getTheme().getProperty<StateColor>("background_color").normal);
     
     sf::RectangleShape cursorShape(
         sf::Vector2f(
