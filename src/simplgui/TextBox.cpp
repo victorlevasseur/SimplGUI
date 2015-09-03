@@ -5,17 +5,17 @@
 namespace simplgui
 {
 
-std::shared_ptr<TextBox> TextBox::create()
+std::shared_ptr<TextBox> TextBox::create(std::shared_ptr<ResourcesGetter> resGetter)
 {
-    return std::shared_ptr<TextBox>(new TextBox());
+    return std::shared_ptr<TextBox>(new TextBox(resGetter));
 }
 
-TextBox::TextBox() : 
-    Widget(), 
+TextBox::TextBox(std::shared_ptr<ResourcesGetter> resGetter) : 
+    Widget(resGetter), 
     onTextChanged(),
     m_string(), 
     m_text(),
-    m_font(),
+    m_font(nullptr),
     m_firstDisplayedCharIndex(0),
     m_lastDisplayedCharIndex(0),
     m_selectionStart(0),
@@ -26,7 +26,6 @@ TextBox::TextBox() :
     setSize(sf::Vector2f(150.f, 40.f));
     m_text.setColor(sf::Color(0, 0, 0));
     m_text.setPosition(3.f, 3.f);
-    m_text.setFont(m_font);
     
     doThemeUpdate(); //Update the textbox appearance
 }
@@ -241,8 +240,11 @@ void TextBox::onSizeUpdated()
 
 sf::Vector2f TextBox::doCalculateAutoSize() const
 {
+    if(!m_font)
+        return sf::Vector2f(0.f, 0.f);
+        
     //Calculate the height using a custom text (so as the height is always correct even if the text is empty)
-    sf::Text testText("ablkj", m_font, m_text.getCharacterSize());
+    sf::Text testText("ablkj", *m_font, m_text.getCharacterSize());
     
     return sf::Vector2f(
         m_text.getLocalBounds().left + m_text.getLocalBounds().width + 6.f, 
@@ -252,8 +254,14 @@ sf::Vector2f TextBox::doCalculateAutoSize() const
 
 void TextBox::doThemeUpdate()
 {
-    m_font.loadFromFile(getTheme().getProperty<std::string>("font", "Liberation.ttf"));
-    m_text.setFont(m_font); //Force an update of the text object
+    if(getResourcesGetter().expired())
+    {
+        std::cout << "[WARNING] simplgui::TextBox: No resources getter affected, can't load the font." << std::endl;
+        return;
+    }
+        
+    m_font = std::shared_ptr<ResourcesGetter>(getResourcesGetter())->loadFont(getTheme().getProperty<std::string>("font", "Liberation.ttf"));
+    m_text.setFont(*m_font); //Force an update of the text object
     m_text.setCharacterSize(getTheme().getProperty<unsigned int>("font_size", 30));
     
     updateText();

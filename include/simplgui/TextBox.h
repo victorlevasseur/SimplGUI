@@ -17,7 +17,13 @@ public:
     using Ptr = std::shared_ptr<TextBox>; ///< Shared pointer to TextBox
     using ConstPtr = std::shared_ptr<const TextBox>; ///< Shared pointer to const TextBox
 
-    static std::shared_ptr<TextBox> create();
+    /**
+     * Create a text box widget.
+     * \param resGetter the resources getter the widget will use to load its resources (the font
+     * in the case of the TextBox widget)
+     * \return a shared_ptr to the newly created widget.
+     */
+    static std::shared_ptr<TextBox> create(std::shared_ptr<ResourcesGetter> resGetter = nullptr);
     virtual ~TextBox() {};
     
     /**
@@ -67,7 +73,7 @@ public:
     Connector<const std::u32string&> onTextChanged; ///< Event emitted when the text changes
 
 protected:
-    TextBox();
+    TextBox(std::shared_ptr<ResourcesGetter> resGetter = nullptr);
     
     virtual void doProcessEvent(sf::Event event);
     virtual void doUpdate(sf::Time dt);
@@ -100,7 +106,7 @@ private:
     std::u32string m_string;
     
     sf::Text m_text;
-    sf::Font m_font;
+    std::shared_ptr<sf::Font> m_font;
     unsigned int m_firstDisplayedCharIndex;
     unsigned int m_lastDisplayedCharIndex;
     

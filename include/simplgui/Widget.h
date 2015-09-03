@@ -11,6 +11,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "simplgui/Theme.h"
+#include "simplgui/ResourcesGetter.h"
 
 namespace simplgui
 {
@@ -115,8 +116,14 @@ public:
     
     void setTheme(const Theme &theme) { m_theme = theme; doThemeUpdate(); }
     
+    void setResourcesGetter(std::shared_ptr<ResourcesGetter> resGetter) { m_resGetter = resGetter; doThemeUpdate(); }
+    
 protected:
-    Widget();
+    /**
+     * Private constructor initializing the widget without a resources getter.
+     */
+    Widget(std::shared_ptr<ResourcesGetter> resGetter = nullptr);
+    
     
     /**
      * All widgets must overload this method to be able to process SFML events.
@@ -163,6 +170,11 @@ protected:
      * \endcode
      */
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const = 0;
+    
+    /**
+     * \return the resources getter used by this widget.
+     */
+    std::weak_ptr<ResourcesGetter> getResourcesGetter() const { return m_resGetter; }
 
 private:
     std::weak_ptr<Widget> m_parent;
@@ -170,7 +182,9 @@ private:
     sf::Vector2f m_minSize;
     sf::Vector2f m_maxSize;
     bool m_focus;
+    
     Theme m_theme;
+    std::weak_ptr<ResourcesGetter> m_resGetter;
     
     mutable sf::Vector2f m_tmp_autoSize;
     mutable bool m_tmp_autoSizeNeedUpdate;

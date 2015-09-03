@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "simplgui/FileResourcesGetter.h"
 #include "simplgui/TextBox.h"
 
 void whenTextChanged(const std::u32string &str)
@@ -23,11 +24,13 @@ int main()
     bgColor.focused = sf::Color(160, 160, 255, 255);
     myTheme.setProperty<simplgui::StateColor>("background_color", bgColor);
     
+    //RESOURCES GETTER
+    auto resGetter = simplgui::FileResourcesGetter::create();
+    
     //TEXTBOX
-    simplgui::TextBox::Ptr textBox = simplgui::TextBox::create();
+    simplgui::TextBox::Ptr textBox = simplgui::TextBox::create(resGetter);
     textBox->setPosition(sf::Vector2f(100, 100));
     textBox->setText(U"Some text");
-    //textBox->setHideCharacter();
     textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
     textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));
     textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));

@@ -3,7 +3,7 @@
 namespace simplgui
 {
 
-Widget::Widget() : 
+Widget::Widget(std::shared_ptr<ResourcesGetter> resGetter) : 
     sf::Drawable(), 
     sf::Transformable(), 
     m_parent(), 
@@ -12,6 +12,7 @@ Widget::Widget() :
     m_maxSize(NO_MAX_SIZE, NO_MAX_SIZE),
     m_focus(false),
     m_theme(Theme::defaultTheme()),
+    m_resGetter(resGetter),
     m_tmp_autoSize(),
     m_tmp_autoSizeNeedUpdate(false)
 {
