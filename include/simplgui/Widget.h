@@ -30,7 +30,7 @@ constexpr float NO_MAX_SIZE = std::numeric_limits<float>::max(); ///< Use this c
  * This class inherit from sf::Transformable which provides methods to move, rotate and scale the widget. However, the
  * size is managed by this class itself.
  */
-class Widget : public sf::Drawable, public sf::Transformable
+class Widget : public sf::Drawable, public sf::Transformable, public std::enable_shared_from_this<Widget>
 {
 public:
     using Ptr = std::shared_ptr<Widget>; ///< Shared pointer to Widget
@@ -123,7 +123,6 @@ protected:
      * Private constructor initializing the widget without a resources getter.
      */
     Widget(std::shared_ptr<ResourcesGetter> resGetter = nullptr);
-    
     
     /**
      * All widgets must overload this method to be able to process SFML events.

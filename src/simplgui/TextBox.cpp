@@ -1,6 +1,7 @@
 #include "simplgui/TextBox.h"
 
 #include <iostream>
+#include "simplgui/Renderer.h"
 
 namespace simplgui
 {
@@ -259,8 +260,9 @@ void TextBox::doThemeUpdate()
         std::cout << "[WARNING] simplgui::TextBox: No resources getter affected, can't load the font." << std::endl;
         return;
     }
+    std::shared_ptr<ResourcesGetter> resGetter(getResourcesGetter());
         
-    m_font = std::shared_ptr<ResourcesGetter>(getResourcesGetter())->loadFont(getTheme().getProperty<std::string>("font", "Liberation.ttf"));
+    m_font = resGetter->loadFont(getTheme().getProperty<std::string>("font", "Liberation.ttf"));
     m_text.setFont(*m_font); //Force an update of the text object
     m_text.setCharacterSize(getTheme().getProperty<unsigned int>("font_size", 30));
     
@@ -270,23 +272,34 @@ void TextBox::doThemeUpdate()
 
 void TextBox::draw(sf::RenderTarget &target, sf::RenderStates) const
 {
-    sf::RectangleShape bgShape(getEffectiveSize());
-    bgShape.setFillColor(isFocused() ? getTheme().getProperty<StateColor>("background_color").focused : getTheme().getProperty<StateColor>("background_color").normal);
-    
-    sf::RectangleShape cursorShape(
-        sf::Vector2f(
-            !hasMultipleCharSelected() ? 2 : (getCharacterPosition(m_selectionLen + m_selectionStart).x - getCharacterPosition(m_selectionStart).x), 
-            getEffectiveSize().y - 6.f
+    //Draw the textbox background
+    Renderer::DrawBackgroundRectangle(target, shared_from_this(), sf::FloatRect({0, 0}, getEffectiveSize()));
+
+    //Draw the cursor or the selection
+    if(!hasMultipleCharSelected())
+    {
+        Renderer::DrawRectangle(
+            target,
+            sf::FloatRect({getCharacterPosition(m_selectionStart).x, 3.f}, {2.f, getEffectiveSize().y - 6.f}),
+            0.f,
+            isFocused() ? getTheme().getProperty<StateColor>("text_color").normal : sf::Color::Transparent,
+            sf::Color::Transparent,
+            getGlobalTransform()
+        );     
+    }
+    else
+    {
+        Renderer::DrawSelectionRectangle(
+            target, 
+            shared_from_this(), 
+            sf::FloatRect(
+                {getCharacterPosition(m_selectionStart).x, 3.f}, 
+                {getCharacterPosition(m_selectionLen + m_selectionStart).x - getCharacterPosition(m_selectionStart).x, getEffectiveSize().y - 6.f}
             )
         );
-    cursorShape.setPosition(sf::Vector2f(
-        getCharacterPosition(m_selectionStart).x, 
-        3.f
-        ));
-    cursorShape.setFillColor(isFocused() ? (!hasMultipleCharSelected() ? sf::Color(0, 0, 0, 255) : sf::Color(128, 128, 255, 255)) : sf::Color(0, 0, 0, 0));
+    }
     
-    target.draw(bgShape, getGlobalTransform());
-    target.draw(cursorShape, getGlobalTransform());
+    //Draw the text
     target.draw(m_text, getGlobalTransform());
 }
 

@@ -62,9 +62,18 @@ public:
     static Theme defaultTheme()
     {
         Theme th;
+        
         th.setProperty<std::string>("font", "LiberationSans.ttf");
         th.setProperty<unsigned int>("font_size", 30);
+        
         th.setProperty<StateColor>("background_color", StateColor(sf::Color(255, 255, 255, 180), sf::Color(255, 255, 255, 255)));
+        th.setProperty<StateColor>("border_color", StateColor(sf::Color(0, 0, 0, 255), sf::Color(128, 128, 255, 255)));
+        th.setProperty<float>("border_thickness", 2.f);
+        
+        th.setProperty<StateColor>("selection_color", StateColor(sf::Color(100, 100, 255, 180), sf::Color(100, 100, 255, 255)));
+        th.setProperty<StateColor>("selection_border_color", StateColor(sf::Color(128, 128, 255, 180), sf::Color(128, 128, 255, 255)));
+        th.setProperty<float>("selection_border_thickness", 1.f);
+        
         th.setProperty<StateColor>("text_color", StateColor(sf::Color(0, 0, 0, 255)));
         
         return th;

@@ -19,10 +19,7 @@ int main()
     //THEME
     simplgui::Theme myTheme = simplgui::Theme::defaultTheme();
     myTheme.setProperty<std::string>("font", "DejaVu.ttf");
-    myTheme.setProperty<unsigned int>("font_size", 50);
-    simplgui::StateColor bgColor = myTheme.getProperty<simplgui::StateColor>("background_color");
-    bgColor.focused = sf::Color(160, 160, 255, 255);
-    myTheme.setProperty<simplgui::StateColor>("background_color", bgColor);
+    myTheme.setProperty<unsigned int>("font_size", 30);
     
     //RESOURCES GETTER
     auto resGetter = simplgui::FileResourcesGetter::create();
@@ -31,9 +28,7 @@ int main()
     simplgui::TextBox::Ptr textBox = simplgui::TextBox::create(resGetter);
     textBox->setPosition(sf::Vector2f(100, 100));
     textBox->setText(U"Some text");
-    textBox->setMinSize(sf::Vector2f(200.f, simplgui::NO_MIN_SIZE));
-    textBox->setMaxSize(sf::Vector2f(400.f, simplgui::NO_MAX_SIZE));
-    textBox->setSize(sf::Vector2f(simplgui::AUTO_SIZE, simplgui::AUTO_SIZE));
+    textBox->setSize(sf::Vector2f(300, simplgui::AUTO_SIZE));
     textBox->setTheme(myTheme);
     
     unsigned int bindId = textBox->onTextChanged.bind(whenTextChanged);
@@ -55,7 +50,7 @@ int main()
         
         textBox->update(dt);
 
-        window.clear(sf::Color(128, 128, 128));
+        window.clear(sf::Color(200, 200, 200));
         window.draw(*textBox);
         window.display();
     }
