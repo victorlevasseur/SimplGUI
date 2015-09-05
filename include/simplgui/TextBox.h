@@ -27,11 +27,6 @@ public:
     virtual ~TextBox() {};
     
     /**
-     * Set the font used by this widget.
-     */
-    void setFont(const sf::Font &font);
-    
-    /**
      * \return the start position of the selection
      */
     int getSelectionStart() const;
@@ -106,8 +101,8 @@ private:
     std::u32string m_string;
     std::u32string m_displayedStr;
     
-    sf::Text m_text;
     std::shared_ptr<sf::Font> m_font;
+    
     unsigned int m_firstDisplayedCharIndex;
     unsigned int m_lastDisplayedCharIndex;
     

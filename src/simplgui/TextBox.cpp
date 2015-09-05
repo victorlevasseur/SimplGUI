@@ -16,7 +16,6 @@ TextBox::TextBox(std::shared_ptr<ResourcesGetter> resGetter) :
     onTextChanged(),
     m_string(),
     m_displayedStr(),
-    m_text(),
     m_font(nullptr),
     m_firstDisplayedCharIndex(0),
     m_lastDisplayedCharIndex(0),
@@ -26,18 +25,8 @@ TextBox::TextBox(std::shared_ptr<ResourcesGetter> resGetter) :
     m_leftClicking(false)
 {
     setSize(sf::Vector2f(150.f, 40.f));
-    m_text.setColor(sf::Color(0, 0, 0));
-    m_text.setPosition(3.f, 3.f);
     
     doThemeUpdate(); //Update the textbox appearance
-}
-
-void TextBox::setFont(const sf::Font &font)
-{
-    m_text.setFont(font);
-    
-    updateText();
-    needAutoSizeUpdate();
 }
 
 int TextBox::getSelectionStart() const
@@ -246,12 +235,9 @@ sf::Vector2f TextBox::doCalculateAutoSize() const
         return sf::Vector2f(0.f, 0.f);
         
     //Calculate the height using a custom text (so as the height is always correct even if the text is empty)
-    sf::Text testText("ablkj", *m_font, m_text.getCharacterSize());
+    sf::Vector2f textSize = Renderer::getTextSize(U"abfgjl", *m_font, getTheme().getProperty<unsigned int>("font_size", 30));
     
-    return sf::Vector2f(
-        m_text.getLocalBounds().left + m_text.getLocalBounds().width + 6.f, 
-        testText.getLocalBounds().top + testText.getLocalBounds().height + 6.f
-        );
+    return textSize + sf::Vector2f(6.f, 6.f);
 }
 
 void TextBox::doThemeUpdate()
@@ -264,8 +250,6 @@ void TextBox::doThemeUpdate()
     std::shared_ptr<ResourcesGetter> resGetter(getResourcesGetter());
         
     m_font = resGetter->loadFont(getTheme().getProperty<std::string>("font", "Liberation.ttf"));
-    m_text.setFont(*m_font); //Force an update of the text object
-    m_text.setCharacterSize(getTheme().getProperty<unsigned int>("font_size", 30));
     
     updateText();
     needAutoSizeUpdate();
@@ -313,7 +297,6 @@ void TextBox::updateText()
         strToDisplay = std::u32string(m_string.size(), m_hideChar);
 
     m_displayedStr.clear();
-    m_text.setString("");
     unsigned int textSize = getTheme().getProperty<unsigned int>("font_size", 30);
 
     for(auto it = strToDisplay.begin() + m_firstDisplayedCharIndex; 
@@ -327,8 +310,6 @@ void TextBox::updateText()
         m_displayedStr.erase(m_displayedStr.size()-1);
         
     m_lastDisplayedCharIndex = m_displayedStr.size() > 0 ? m_firstDisplayedCharIndex + m_displayedStr.size()-1 : 0;
-    
-    m_text.setString(reinterpret_cast<const sf::Uint32*>(m_displayedStr.c_str()));
 }
 
 void TextBox::ensureCharacterIsVisible(unsigned int pos)
@@ -379,7 +360,12 @@ int TextBox::getCharacterIndexAt(float x, float) const
 {
     unsigned int charIndex = 0;
     
-    while((m_text.findCharacterPos(charIndex).x + (charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex) ? m_text.findCharacterPos(charIndex+1).x : (m_text.getLocalBounds().left + m_text.getLocalBounds().width)))/2.f < x && 
+    auto getCharAt = std::bind(Renderer::getCharPosInText, m_displayedStr, *m_font, getTheme().getProperty<unsigned int>("font_size", 30), std::placeholders::_1);
+    sf::Vector2f textSize = Renderer::getTextSize(m_displayedStr, *m_font, getTheme().getProperty<unsigned int>("font_size", 30));
+    
+    while((getCharAt(charIndex).x + 3.f /* the margin */ + (charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex) ? 
+                getCharAt(charIndex+1).x + 3.f : 
+                (textSize.x + 3.f)))/2.f < x && 
         charIndex < (m_lastDisplayedCharIndex - m_firstDisplayedCharIndex + 1))
     {
         ++charIndex;
