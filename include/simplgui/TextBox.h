@@ -97,13 +97,14 @@ private:
      * Improved version of findCharacterPos of SFML so as it returns the full size of
      * the text if the index = m_string.size()
      */
-    sf::Vector2f getCharacterPosition(unsigned int index) const;
+    sf::Vector2f getCharacterPosition(int index) const;
     
     int getCharacterIndexAt(float x, float y) const;
     
     void eraseSelection();
  
     std::u32string m_string;
+    std::u32string m_displayedStr;
     
     sf::Text m_text;
     std::shared_ptr<sf::Font> m_font;

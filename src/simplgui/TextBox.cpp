@@ -14,7 +14,8 @@ std::shared_ptr<TextBox> TextBox::create(std::shared_ptr<ResourcesGetter> resGet
 TextBox::TextBox(std::shared_ptr<ResourcesGetter> resGetter) : 
     Widget(resGetter), 
     onTextChanged(),
-    m_string(), 
+    m_string(),
+    m_displayedStr(),
     m_text(),
     m_font(nullptr),
     m_firstDisplayedCharIndex(0),
@@ -273,12 +274,12 @@ void TextBox::doThemeUpdate()
 void TextBox::draw(sf::RenderTarget &target, sf::RenderStates) const
 {
     //Draw the textbox background
-    Renderer::DrawBackgroundRectangle(target, shared_from_this(), sf::FloatRect({0, 0}, getEffectiveSize()));
+    Renderer::drawBackgroundRectangle(target, shared_from_this(), sf::FloatRect({0, 0}, getEffectiveSize()));
 
     //Draw the cursor or the selection
     if(!hasMultipleCharSelected())
     {
-        Renderer::DrawRectangle(
+        Renderer::drawRectangle(
             target,
             sf::FloatRect({getCharacterPosition(m_selectionStart).x, 3.f}, {2.f, getEffectiveSize().y - 6.f}),
             0.f,
@@ -289,7 +290,7 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates) const
     }
     else
     {
-        Renderer::DrawSelectionRectangle(
+        Renderer::drawSelectionRectangle(
             target, 
             shared_from_this(), 
             sf::FloatRect(
@@ -300,7 +301,7 @@ void TextBox::draw(sf::RenderTarget &target, sf::RenderStates) const
     }
     
     //Draw the text
-    target.draw(m_text, getGlobalTransform());
+    Renderer::drawText(target, shared_from_this(), m_displayedStr, *m_font, sf::Vector2f(3.f, 3.f));
 }
 
 void TextBox::updateText()
@@ -311,23 +312,23 @@ void TextBox::updateText()
     else
         strToDisplay = std::u32string(m_string.size(), m_hideChar);
 
-    sf::String textString("");
+    m_displayedStr.clear();
     m_text.setString("");
+    unsigned int textSize = getTheme().getProperty<unsigned int>("font_size", 30);
 
     for(auto it = strToDisplay.begin() + m_firstDisplayedCharIndex; 
-        it != strToDisplay.end() && (m_text.getLocalBounds().left + m_text.getLocalBounds().width < (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
+        it != strToDisplay.end() && (3.f + Renderer::getTextSize(m_displayedStr, *m_font, textSize).x < (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f);
         ++it)
     {
-        textString.insert(textString.getSize(), static_cast<sf::Uint32>(*it));
-        m_text.setString(textString);
+        m_displayedStr.push_back(*it);
     }
     
-    if(m_text.getLocalBounds().left + m_text.getLocalBounds().width >= (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f)
-        textString.erase(textString.getSize()-1);
+    if(3.f + Renderer::getTextSize(m_displayedStr, *m_font, textSize).x >= (getSize().x == AUTO_SIZE ? getMaxSize().x : getSize().x) - 6.f)
+        m_displayedStr.erase(m_displayedStr.size()-1);
         
-    m_lastDisplayedCharIndex = textString.getSize() > 0 ? m_firstDisplayedCharIndex + textString.getSize()-1 : 0;
+    m_lastDisplayedCharIndex = m_displayedStr.size() > 0 ? m_firstDisplayedCharIndex + m_displayedStr.size()-1 : 0;
     
-    m_text.setString(textString);
+    m_text.setString(reinterpret_cast<const sf::Uint32*>(m_displayedStr.c_str()));
 }
 
 void TextBox::ensureCharacterIsVisible(unsigned int pos)
@@ -369,14 +370,9 @@ bool TextBox::hasMultipleCharSelected() const
     return (m_selectionLen != 0);
 }
 
-sf::Vector2f TextBox::getCharacterPosition(unsigned int index) const
+sf::Vector2f TextBox::getCharacterPosition(int index) const
 {
-    if(index <= 0)
-        return m_text.getPosition();
-    else if(index >= m_string.size())
-        return sf::Vector2f(m_text.getGlobalBounds().left + m_text.getGlobalBounds().width, m_text.getGlobalBounds().top + m_text.getGlobalBounds().height);
-    else 
-        return m_text.findCharacterPos(index - m_firstDisplayedCharIndex);
+    return sf::Vector2f(3.f, 3.f) + Renderer::getCharPosInText(m_displayedStr, *m_font, getTheme().getProperty<unsigned int>("font_size", 30), index - m_firstDisplayedCharIndex);
 }
 
 int TextBox::getCharacterIndexAt(float x, float) const
