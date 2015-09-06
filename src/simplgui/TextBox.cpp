@@ -360,6 +360,9 @@ int TextBox::getCharacterIndexAt(float x, float) const
 {
     unsigned int charIndex = 0;
     
+    if(m_displayedStr.empty())
+        return 0;
+    
     auto getCharAt = std::bind(Renderer::getCharPosInText, m_displayedStr, *m_font, getTheme().getProperty<unsigned int>("font_size", 30), std::placeholders::_1);
     sf::Vector2f textSize = Renderer::getTextSize(m_displayedStr, *m_font, getTheme().getProperty<unsigned int>("font_size", 30));
     
