@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "simplgui/Button.h"
 #include "simplgui/Event.h"
 #include "simplgui/FileResourcesGetter.h"
 #include "simplgui/TextBox.h"
@@ -31,6 +32,13 @@ int main()
     textBox->setSize(sf::Vector2f(300, simplgui::AUTO_SIZE));
     textBox->setTheme(myTheme);
 
+    //BUTTON
+    simplgui::Button::Ptr button = simplgui::Button::create(resGetter);
+    button->setPosition(sf::Vector2f(408, 100));
+    button->setMinSize(sf::Vector2f(48, simplgui::NO_MIN_SIZE));
+    button->setTheme(myTheme);
+    button->setLabel(U"OK");
+
     unsigned int bindId = textBox->onTextChanged.bind(whenTextChanged);
 
     sf::Clock clock;
@@ -44,14 +52,17 @@ int main()
                 window.close();
 
             textBox->processEvent(simplgui::Event(event, window));
+            button->processEvent(simplgui::Event(event, window));
         }
 
         auto dt = clock.restart();
 
         textBox->update(dt);
+        button->update(dt);
 
         window.clear(sf::Color(200, 200, 200));
         window.draw(*textBox);
+        window.draw(*button);
         window.display();
     }
 
