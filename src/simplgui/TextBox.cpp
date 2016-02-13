@@ -234,10 +234,11 @@ sf::Vector2f TextBox::doCalculateAutoSize() const
     if(!m_font)
         return sf::Vector2f(0.f, 0.f);
 
+    sf::Vector2f currentTextSize = Renderer::getTextSize(m_string, *m_font, getTheme().getProperty<unsigned int>("font_size", 30));
     //Calculate the height using a custom text (so as the height is always correct even if the text is empty)
     sf::Vector2f textSize = Renderer::getTextSize(U"abfgjl", *m_font, getTheme().getProperty<unsigned int>("font_size", 30));
 
-    return textSize + sf::Vector2f(6.f, 6.f);
+    return sf::Vector2f(currentTextSize.x, textSize.y) + sf::Vector2f(6.f, 6.f);
 }
 
 void TextBox::doThemeUpdate()
