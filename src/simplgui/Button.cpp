@@ -32,7 +32,18 @@ void Button::setLabel(const std::u32string& str)
 
 void Button::doProcessEvent(simplgui::Event event)
 {
+    if(event.type = simplgui::Event::MouseButtonReleased)
+    {
+        sf::Transform globalTr = getGlobalTransform();
+        sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
 
+        widgetRect = globalTr.transformRect(widgetRect);
+
+        if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
+        {
+            onClicked.call();
+        }
+    }
 }
 
 void Button::doUpdate(sf::Time dt)

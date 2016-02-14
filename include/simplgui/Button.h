@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "simplgui/Widget.h"
+#include "simplgui/Connector.h"
 
 namespace simplgui
 {
@@ -18,6 +19,8 @@ public:
 
     std::u32string getLabel() const;
     void setLabel(const std::u32string& str);
+
+    Connector<> onClicked;
 
 protected:
     Button(std::shared_ptr<ResourcesGetter> resGetter = nullptr);
