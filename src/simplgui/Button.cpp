@@ -13,6 +13,7 @@ std::shared_ptr<Button> Button::create(std::shared_ptr<ResourcesGetter> resGette
 
 Button::Button(std::shared_ptr<ResourcesGetter> resGetter) :
     Widget(resGetter),
+    onClicked(),
     m_label(),
     m_font()
 {
@@ -41,7 +42,7 @@ void Button::doProcessEvent(simplgui::Event event)
 
         if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
         {
-            onClicked.call();
+            onClicked.call(shared_from_this());
         }
     }
 }

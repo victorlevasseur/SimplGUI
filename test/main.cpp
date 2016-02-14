@@ -10,7 +10,7 @@
 #include "simplgui/TextBox.h"
 #include "simplgui/Tools.h"
 
-void whenTextChanged(const std::u32string &str)
+void whenTextChanged(simplgui::TextBox::Ptr textBox, const std::u32string &str)
 {
     std::cout << simplgui::tools::getSfString(str).toAnsiString() << std::endl;
 }

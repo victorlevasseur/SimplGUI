@@ -20,7 +20,7 @@ public:
     std::u32string getLabel() const;
     void setLabel(const std::u32string& str);
 
-    Connector<> onClicked;
+    Connector<Button> onClicked;
 
 protected:
     Button(std::shared_ptr<ResourcesGetter> resGetter = nullptr);

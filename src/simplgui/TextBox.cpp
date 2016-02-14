@@ -154,7 +154,7 @@ void TextBox::doProcessEvent(simplgui::Event event)
             needAutoSizeUpdate();
             updateText();
 
-            onTextChanged.call(m_string);
+            onTextChanged.call(shared_from_this(), m_string);
         }
         else if(event.type == simplgui::Event::KeyPressed)
         {

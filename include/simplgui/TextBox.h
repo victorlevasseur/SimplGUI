@@ -65,7 +65,7 @@ public:
      */
     void setHideCharacter(char32_t hideChar = U'\x25CF');
 
-    Connector<const std::u32string&> onTextChanged; ///< Event emitted when the text changes
+    Connector<TextBox, const std::u32string&> onTextChanged; ///< Event emitted when the text changes
 
 protected:
     TextBox(std::shared_ptr<ResourcesGetter> resGetter = nullptr);
