@@ -9,18 +9,39 @@
 namespace simplgui
 {
 
+namespace
+{
+
+template<typename T>
+T getPropertyAccordingToState(const StateDepProperty<T> &stateProp, std::shared_ptr<const Widget> widget)
+{
+    if(widget->isFocused())
+    {
+        if(widget->isClicked())
+        {
+            return stateProp.focusedAndClicked;
+        }
+        else
+        {
+            return stateProp.focused;
+        }
+    }
+    else
+    {
+        return stateProp.normal;
+    }
+}
+
+}
+
 void Renderer::drawBackgroundRectangle(sf::RenderTarget &target, std::shared_ptr<const Widget> widget, sf::FloatRect rectangle)
 {
     drawRectangle(
         target,
         rectangle,
         widget->getTheme().getProperty<float>("border_thickness"),
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("background_color").focused :
-            widget->getTheme().getProperty<StateColor>("background_color").normal,
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("border_color").focused :
-            widget->getTheme().getProperty<StateColor>("border_color").normal,
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("background_color"), widget),
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("border_color"), widget),
         widget->getGlobalTransform()
     );
 }
@@ -31,12 +52,8 @@ void Renderer::drawButtonRectangle(sf::RenderTarget &target, std::shared_ptr<con
         target,
         rectangle,
         widget->getTheme().getProperty<float>("button_border_thickness"),
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("button_background_color").focused :
-            widget->getTheme().getProperty<StateColor>("button_background_color").normal,
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("button_border_color").focused :
-            widget->getTheme().getProperty<StateColor>("button_border_color").normal,
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("button_background_color"), widget),
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("button_border_color"), widget),
         widget->getGlobalTransform()
     );
 }
@@ -47,12 +64,8 @@ void Renderer::drawSelectionRectangle(sf::RenderTarget &target, std::shared_ptr<
         target,
         rectangle,
         widget->getTheme().getProperty<float>("selection_border_thickness"),
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("selection_color").focused :
-            widget->getTheme().getProperty<StateColor>("selection_color").normal,
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("selection_border_color").focused :
-            widget->getTheme().getProperty<StateColor>("selection_border_color").normal,
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("selection_color"), widget),
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("selection_border_color"), widget),
         widget->getGlobalTransform()
     );
 }
@@ -109,9 +122,7 @@ void Renderer::drawText(
         font,
         widget->getTheme().getProperty<unsigned int>("text_size", 30),
         position,
-        widget->isFocused() ?
-            widget->getTheme().getProperty<StateColor>("text_color").focused :
-            widget->getTheme().getProperty<StateColor>("text_color").normal,
+        getPropertyAccordingToState(widget->getTheme().getProperty<StateColor>("text_color"), widget),
         widget->getGlobalTransform()
     );
 }

@@ -70,8 +70,8 @@ public:
         th.setProperty<StateColor>("border_color", StateColor(sf::Color(0, 0, 0, 255)).setFocused(sf::Color(128, 128, 255, 255)));
         th.setProperty<float>("border_thickness", 2.f);
 
-        th.setProperty<StateColor>("button_background_color", StateColor(sf::Color(180, 180, 180, 255)).setClicked(sf::Color(200, 200, 200, 255)));
-        th.setProperty<StateColor>("button_border_color", StateColor(sf::Color(0, 0, 0, 255)).setClicked(sf::Color(128, 128, 128, 255)));
+        th.setProperty<StateColor>("button_background_color", StateColor(sf::Color(180, 180, 180, 255)).setFocusedAndClicked(sf::Color(200, 200, 200, 255)));
+        th.setProperty<StateColor>("button_border_color", StateColor(sf::Color(0, 0, 0, 255)).setFocusedAndClicked(sf::Color(128, 128, 128, 255)));
         th.setProperty<float>("button_border_thickness", 2.f);
 
         th.setProperty<StateColor>("selection_color", StateColor(sf::Color(100, 100, 255, 180)).setFocused(sf::Color(100, 100, 255, 255)));

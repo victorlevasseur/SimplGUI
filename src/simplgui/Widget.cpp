@@ -11,6 +11,7 @@ Widget::Widget(std::shared_ptr<ResourcesGetter> resGetter) :
     m_minSize(NO_MIN_SIZE, NO_MIN_SIZE),
     m_maxSize(NO_MAX_SIZE, NO_MAX_SIZE),
     m_focus(false),
+    m_click(false),
     m_theme(Theme::defaultTheme()),
     m_resGetter(resGetter),
     m_tmp_autoSize(),
@@ -31,10 +32,26 @@ void Widget::processEvent(simplgui::Event event)
         if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
         {
             setFocused(true);
+            m_click = true;
         }
         else //TODO: Allow widgets to go outside their effective size rectangle (like combobox with their unfoldable list)
         {
             setFocused(false);
+        }
+    }
+    else if(event.type == simplgui::Event::MouseButtonReleased)
+    {
+        m_click = false;
+    }
+    else if(event.type == simplgui::Event::MouseMoved)
+    {
+        if(widgetRect.contains(event.mouseMove.x, event.mouseMove.y))
+        {
+            
+        }
+        else //TODO: Allow widgets to go outside their effective size rectangle (like combobox with their unfoldable list)
+        {
+            m_click = false;
         }
     }
 

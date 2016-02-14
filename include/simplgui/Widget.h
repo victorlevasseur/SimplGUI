@@ -113,6 +113,11 @@ public:
      */
     void setFocused(bool focus) { m_focus = focus; }
 
+    /**
+     * \return true if the widget is clicked.
+     */
+    bool isClicked() const { return m_click; }
+
     const Theme& getTheme() const { return m_theme; }
 
     void setTheme(const Theme &theme) { m_theme = theme; doThemeUpdate(); }
@@ -181,7 +186,9 @@ private:
     sf::Vector2f m_size;
     sf::Vector2f m_minSize;
     sf::Vector2f m_maxSize;
+
     bool m_focus;
+    bool m_click;
 
     Theme m_theme;
     std::weak_ptr<ResourcesGetter> m_resGetter;
