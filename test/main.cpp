@@ -37,9 +37,13 @@ int main()
     button->setPosition(sf::Vector2f(408, 100));
     button->setMinSize(sf::Vector2f(48, simplgui::NO_MIN_SIZE));
     button->setTheme(myTheme);
-    button->setLabel(U"OK");
+    button->setLabel(U"Clear text");
 
-    unsigned int bindId = textBox->onTextChanged.bind(whenTextChanged);
+    textBox->onTextChanged.bind(whenTextChanged);
+    button->onClicked.bind([&](simplgui::Button::Ptr button)
+    {
+        textBox->setText(U"");
+    });
 
     sf::Clock clock;
 
