@@ -53,7 +53,6 @@ void Event::init(sf::Event event, const sf::RenderTarget &target, sf::View view)
     else
     {
         type = Unsupported;
-        std::cout << "[NOTE] simplgui::Event: Unsupported event created" << std::endl;
     }
 }
 

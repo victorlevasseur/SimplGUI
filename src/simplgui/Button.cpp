@@ -15,7 +15,8 @@ Button::Button(std::shared_ptr<ResourcesGetter> resGetter) :
     Widget(resGetter),
     onClicked(),
     m_label(),
-    m_font()
+    m_font(),
+    m_hasBeenPressed(false)
 {
 
 }
@@ -33,17 +34,27 @@ void Button::setLabel(const std::u32string& str)
 
 void Button::doProcessEvent(simplgui::Event event)
 {
-    if(event.type = simplgui::Event::MouseButtonReleased)
+    if(event.type == simplgui::Event::MouseButtonPressed)
     {
         sf::Transform globalTr = getGlobalTransform();
         sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
 
         widgetRect = globalTr.transformRect(widgetRect);
 
-        if(widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
+        m_hasBeenPressed = widgetRect.contains(event.mouseButton.x, event.mouseButton.y);
+    }
+    else if(event.type == simplgui::Event::MouseButtonReleased)
+    {
+        sf::Transform globalTr = getGlobalTransform();
+        sf::FloatRect widgetRect(sf::Vector2f(0.f, 0.f), getEffectiveSize());
+
+        widgetRect = globalTr.transformRect(widgetRect);
+
+        if(m_hasBeenPressed && widgetRect.contains(event.mouseButton.x, event.mouseButton.y))
         {
             onClicked.call(shared_from_this());
         }
+        m_hasBeenPressed = false;
     }
 }
 

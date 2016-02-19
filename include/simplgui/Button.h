@@ -40,6 +40,8 @@ private:
     std::u32string m_label;
 
     std::shared_ptr<sf::Font> m_font;
+
+    bool m_hasBeenPressed;
 };
 
 }
